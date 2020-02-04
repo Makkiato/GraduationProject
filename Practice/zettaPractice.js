@@ -1,7 +1,6 @@
-<<<<<<< HEAD
-=======
+
 process.EventEmitter = require('events').EventEmitter; // add this line
->>>>>>> 6d004e246468fb01c063fe7a2c0cfe6100513e17
+
 var zetta = require('zetta');
 
 zetta()

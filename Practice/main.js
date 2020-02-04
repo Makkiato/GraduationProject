@@ -14,6 +14,6 @@ app.get('/echo',function(req,res){
 	console.log('repeat '+echoMsg);
 })
 
-app.listen(8888,function(){
+app.listen(8888,'0.0.0.0',function(){
     console.log('server on!');
 });
