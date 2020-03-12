@@ -12,14 +12,17 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         // write your code here
-        URL fiwareAdd = new URL("http://localhost:1026/v2/entities");
-        HttpURLConnection toFiwareDirect = (HttpURLConnection) fiwareAdd.openConnection();
+        String fiwareUrl = "http://localhost:1026/v2/entities";
 
-        sendPost(toFiwareDirect,makeJSON());
+
+        sendPost(fiwareUrl,makeJSON());
+        sendGet(fiwareUrl,"java2");
     }
 
 
-    private static void sendPost(HttpURLConnection conn, JSONObject body) throws IOException {
+    private static void sendPost(String url, JSONObject body) throws IOException {
+        URL fiwareAdd = new URL(url);
+        HttpURLConnection conn = (HttpURLConnection) fiwareAdd.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setDoInput(true);
@@ -41,9 +44,28 @@ public class Main {
 
     }
 
+
+    private static void sendGet(String url, String query) throws IOException {
+        URL fiwareAdd = new URL(url+'/'+query);
+        HttpURLConnection conn = (HttpURLConnection) fiwareAdd.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setDoOutput(true);
+        conn.connect();
+
+
+        BufferedReader inStream = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
+        String iter = null;
+        while((iter = inStream.readLine()) != null){
+            System.out.println(iter);
+        }
+
+
+        inStream.close();
+    }
+
     private static JSONObject makeJSON(){
         JSONObject body = new JSONObject();
-        body.put("id", "fromJava");
+        body.put("id", "java2");
         body.put("type", "testrunning");
         JSONObject value = new JSONObject();
         value.put("type", "string");
