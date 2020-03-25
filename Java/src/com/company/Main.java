@@ -8,16 +8,16 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-public class Main {
+        public class Main {
 
-    public static void main(String[] args) throws IOException {
-        // write your code here
-        String fiwareUrl = "http://localhost:1026/v2/entities";
+            public static void main(String[] args) throws IOException {
+                // write your code here
+                String fiwareUrl = "http://localhost:1026/v2/entities";
 
 
-        sendPost(fiwareUrl,makeJSON());
-        sendGet(fiwareUrl,"java2");
-    }
+                sendPost(fiwareUrl,makeJSON());
+                sendGet(fiwareUrl,"java5");
+                }
 
 
     private static void sendPost(String url, JSONObject body) throws IOException {
@@ -65,7 +65,7 @@ public class Main {
 
     private static JSONObject makeJSON(){
         JSONObject body = new JSONObject();
-        body.put("id", "java2");
+        body.put("id", "java5");
         body.put("type", "testrunning");
         JSONObject value = new JSONObject();
         value.put("type", "string");
