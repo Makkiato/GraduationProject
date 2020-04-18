@@ -40,4 +40,4 @@ ex)
 }
 
 
-mqttclient.js and your own mqtt sub will take message
+mqttclient.js and your own mqtt sub will take message on topic "/device/reply"
