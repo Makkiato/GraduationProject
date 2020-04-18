@@ -1,0 +1,43 @@
+notes for test version
+
+need nodejs, npm
+
+apt-get install nodejs npm (on Windows, just download it from nodejs.org, npm included)
+
+node --version
+npm --version
+
+
+modify config.js to find your mqtt broker
+
+
+run your mqtt broker
+run your other mqtt sub with topic of "/device/#"
+
+run
+node ./mqttclient.js
+
+then
+
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+appear
+
+then publish JSON string contains "id" element with other mqtt publisher on topic "/device/echo"
+ex)
+{
+    "id" : "asjfdiajasijf",
+    "status" : "on"
+}
+
+
+mqttclient.js and your own mqtt sub will take message
