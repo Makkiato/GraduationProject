@@ -29,7 +29,7 @@ client.on("message", function (topic, message) {
       client.publish("/device/reply/"+parsed.id,JSONstring)
   }
   else if (topic.startsWith("/mymind")){
-    execa(omxplayer,['./sounds/firealarm.m4a'])
+    execa('omxplayer',['./sounds/firealarm.m4a'])
 
   }
   console.log(message.toString())
