@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "execa": "^4.0.0",
     "mqtt": "^3.0.0"
   }
 }

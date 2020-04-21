@@ -1,7 +1,8 @@
-var mqtt = require("mqtt");
-var broker = require("./config.js").broker;
+const mqtt = require("mqtt");
+const broker = require("./config.js").broker;
 
-var client = mqtt.connect("mqtt://" + broker.host + ":" + broker.port);
+const client = mqtt.connect("mqtt://" + broker.host + ":" + broker.port);
+const execa = require('execa');
 
 var count = 0;
 client.on("connect", function () {
@@ -11,6 +12,7 @@ client.on("connect", function () {
   });
   client.subscribe("/device/#", function (err) {});
   client.subscribe("/other/#", function (err) {});
+  client.subscribe("/mymind/#", function (err) {});
 });
 
 client.on("message", function (topic, message) {
@@ -25,6 +27,10 @@ client.on("message", function (topic, message) {
       var parsed = JSON.parse(message)
       var JSONstring = '{ "echo" : "' + parsed.id + '"}'
       client.publish("/device/reply/"+parsed.id,JSONstring)
+  }
+  else if (topic.startsWith("/mymind")){
+    execa(omxplayer,['./sounds/firealarm.m4a'])
+
   }
   console.log(message.toString())
 });
