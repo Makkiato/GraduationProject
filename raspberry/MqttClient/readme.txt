@@ -1,3 +1,5 @@
+
+
 notes for test version
 
 need nodejs, npm
@@ -41,3 +43,10 @@ ex)
 
 
 mqttclient.js and your own mqtt sub will take message on topic "/device/reply"
+
+
+--------UPDATE 2020 04 21----------
+
+subscribing new topic "/mymind/#"
+sending any message to this topic causes play special voice record via omxplayer
+before test this handler, make sure you speaker or headphone is connected to raspberrypi
