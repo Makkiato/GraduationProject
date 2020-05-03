@@ -1,10 +1,10 @@
 const mqtt = require("mqtt");
 const broker = require("./config.js").broker;
-
 const client = mqtt.connect("mqtt://" + broker.host + ":" + broker.port);
 const execa = require('execa');
 
 var count = 0;
+
 client.on("connect", function () {
     //excuted when connected
   client.subscribe("/selfecho/#", function (err) {
@@ -30,6 +30,8 @@ client.on("message", function (topic, message) {
   }
   else if (topic.startsWith("/mymind")){
     execa('omxplayer',['./sounds/firealarm.m4a']).stdout.pipe(process.stdout)
+    
   }
+  
   console.log(message.toString())
 });
