@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Welcome to fiware project</title>
+</head>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  var data = ''.split('&quot;').join('"');
+  var parsed = JSON.parse(data)
+  console.log(data);
+  //socket.io load
+  // inner html 사용해서 table 집어넣기
+</script>
+<table border="3">
+  <tr>
+    <td>id</td>
+    <td>machine type</td>
+    <td>status</td>
+    <td>control</td>
+  </tr>
+  <tr>
+    <td>r</td>
+    <td>object.type</td>
+    <td>object.value.value</td>
+    <td>
+      <select id="select1">
+        <option value="default">no change</option>
+        <option value="on">turn on</option>
+        <option value="off">turn off</option>
+      </select>
+    </td>
+  </tr>
+</table>
+<input id="submitResult" type="submit">
+<script type="text/javascript">
+  var select1 = document.getElementById('select1');
+  select1.addEventListener("change" ,function(){
+  console.log("got it");
+  socket.emit('change',{'id' : 'select1', 'value' : select1.options[select1.selectedIndex].value});
+  socket.on('done',function(data){
+  window.location.reload();
+  })
+  });
+  document.getElementById('submitResult').addEventListener("click",function() {
+  console.log("got it")
+  });
+  var selected = function (){
+  console.log(select1.options[select1.selectedIndex].value)
+  }
+  var submitAll = function (){
+  alert("got it")
+  }
+</script>

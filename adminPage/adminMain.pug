@@ -1,0 +1,68 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  meta(http-equiv='X-UA-Compatible' content='ie=edge')
+  title
+    | Welcome to fiware project
+script(src='/socket.io/socket.io.js')
+div(id = 'table')
+script.
+  var socket = io();
+  var data = '#{data}'.split('&quot;').join('"');
+  var parsed = JSON.parse(data)
+  console.log(parsed);
+  var table = document.getElementById('table')
+  const title = '<table border="3"><tr><td>id</td><td>machine type</td><td>status</td><td>control</td></tr>'
+
+  var content = title.toString()
+  for(var i = 0; i<parsed.length; i++){
+    content = content.concat('<tr>')
+    var key = Object.keys(parsed[i])
+    
+    for(var j =0; j<key.length; j++){
+      var currentKey = key[j]
+      
+      if(currentKey == 'value'){
+        var displayData = parsed[i].value.value
+        content = content.concat('<td>' + displayData + '</td>')
+      }
+      else{
+
+        var displayData = parsed[i][currentKey]
+        content = content.concat('<td>' + displayData + '</td>')
+      }    
+    }
+
+    var selectString = "<select id = 'select"+(1+i)+"'>"+
+      "<option value ='default'>no change</option>"+
+      "<option value ='on'>turn on</option>"+
+      "<option value ='off'>turn off</option>"+
+      "</select>"
+    content = content.concat('<td>' + selectString + '</td>');
+    content = content.concat('</tr>');
+  }
+  content = content.concat('</table>')
+  table.innerHTML = content
+
+  //socket.io load
+  // inner html 사용해서 table 집어넣기
+
+
+script(type='text/javascript').
+
+  for(var i = 0; i < parsed.length; i++){
+    const index = i+1
+    const selectedBox = document.getElementById('select'+index);
+    
+    selectedBox.addEventListener("change" ,function(){
+      var valueSend = (parsed[index-1])["value"]
+      valueSend.value = selectedBox.options[selectedBox.selectedIndex].value
+      var dataSend = {'id' : (parsed[index-1])["id"], 'value' : valueSend}
+      socket.emit('change',dataSend);
+      socket.on('done',function(data){
+        window.location.reload();
+      })
+    });
+  }
+  
