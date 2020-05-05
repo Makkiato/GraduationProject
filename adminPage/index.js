@@ -14,7 +14,9 @@ app.get("/", function (req, res) {
 
 app.get("/main", function (req, res) {
   var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
-  fiwareConfig.path = "/v2/entities?type=led";
+  var reqType = req.query.type
+  if(reqType == null) fiwareConfig.path = "/v2/entities";
+  else fiwareConfig.path = "/v2/entities?type="+reqType;
 
   http.get(fiwareConfig, function (response) {
     //console.log(fiwareConfig)
