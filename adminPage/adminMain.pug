@@ -8,14 +8,17 @@ head
 script(src='/socket.io/socket.io.js')
 div(id = 'table')
 script.
+  //preparing websocket
   var socket = io();
+  //data from fiwareCB -> nodejs server
   var data = '#{data}'.split('&quot;').join('"');
   var parsed = JSON.parse(data)
-  console.log(parsed);
   var table = document.getElementById('table')
+  //prepare for innerHtml
   const title = '<table border="3"><tr><td>id</td><td>machine type</td><td>status</td><td>control</td></tr>'
 
   var content = title.toString()
+  //buliding innerHtml string with data
   for(var i = 0; i<parsed.length; i++){
     content = content.concat('<tr>')
     var key = Object.keys(parsed[i])
@@ -45,16 +48,11 @@ script.
   content = content.concat('</table>')
   table.innerHTML = content
 
-  //socket.io load
-  // inner html 사용해서 table 집어넣기
-
-
-script(type='text/javascript').
-
+script.
   for(var i = 0; i < parsed.length; i++){
     const index = i+1
     const selectedBox = document.getElementById('select'+index);
-    
+    //adding event handler for each selectbox
     selectedBox.addEventListener("change" ,function(){
       var valueSend = (parsed[index-1])["value"]
       valueSend.value = selectedBox.options[selectedBox.selectedIndex].value

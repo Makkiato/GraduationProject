@@ -4,25 +4,28 @@ const httpserver = http.createServer(app);
 const io = require("socket.io")(httpserver);
 var config = require("./config.js");
 
+//pug activation
 app.engine("pug", require("pug").__express);
 app.set("view engine", "pug");
 app.locals.pretty = true;
 
+//connection checking
 app.get("/", function (req, res) {
   res.status(200).send("OK : 200");
 });
 
+//webpage main
 app.get("/main", function (req, res) {
+  //simple copy
   var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
-  var reqType = req.query.type
-  if(reqType == null) fiwareConfig.path = "/v2/entities";
-  else fiwareConfig.path = "/v2/entities?type="+reqType;
+  var reqType = req.query.type;
+  if (reqType == null) fiwareConfig.path = "/v2/entities";
+  else fiwareConfig.path = "/v2/entities?type=" + reqType;
 
+  //get data from fiwareCB server
   http.get(fiwareConfig, function (response) {
-    //console.log(fiwareConfig)
     getFromCB(response, function (fiwareData) {
-      //console.log("fiware data\n"+fiwareData)
-
+      //render pug page with data recieved from fiwareCB
       res.render(__dirname + "/adminMain.pug", {
         data: JSON.stringify(JSON.parse(fiwareData)),
       });
@@ -30,14 +33,16 @@ app.get("/main", function (req, res) {
   });
 });
 
+
+//using websocket
 io.on("connection", function (socket) {
   console.log("socket on!");
+  //detect select box change
   socket.on("change", function (data) {
     var writeData = {};
     writeData.value = data.value;
 
-    // fiware에 put 하기
-    var dLength = Buffer.byteLength(JSON.stringify(data));
+    //change data in fiwareCB with the data by client
     var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
     fiwareConfig.method = "PUT";
     fiwareConfig.headers = {
