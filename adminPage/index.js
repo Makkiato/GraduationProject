@@ -14,6 +14,22 @@ app.get("/", function (req, res) {
   res.status(200).send("OK : 200");
 });
 
+app.get("/version",function (req, res) {
+  //simple copy
+  var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
+  
+  fiwareConfig.path = "/version";
+  
+
+  //get data from fiwareCB server
+  http.get(fiwareConfig, function (response) {
+    getFromCB(response, function (fiwareData) {
+      //render pug page with data recieved from fiwareCB
+      res.send(fiwareData);
+    });
+  });
+})
+
 //webpage main
 app.get("/main", function (req, res) {
   //simple copy
