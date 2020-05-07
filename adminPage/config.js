@@ -3,4 +3,7 @@ var orionCB = {
     port : "1026"
 }
 
+const serverport = 7777
+
+module.exports.serverport = serverport;
 module.exports.orionCB = orionCB;

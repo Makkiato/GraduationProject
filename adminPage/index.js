@@ -74,8 +74,8 @@ io.on("connection", function (socket) {
   });
 });
 
-httpserver.listen(7777, function () {
-  console.log("localhost:7777");
+httpserver.listen(config.serverport, function () {
+  console.log("localhost:"+config.serverport);
 });
 
 function getFromCB(response, callback) {
@@ -84,8 +84,6 @@ function getFromCB(response, callback) {
     CBdata += chunk;
   });
   response.on("end", function () {
-    //console.log("received server data:");
-    //console.log(CBdata);
     callback(CBdata);
   });
 }
