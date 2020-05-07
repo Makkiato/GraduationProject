@@ -1,3 +1,15 @@
+2020 05 07
+pm 10 45
+
+functions related to fiware connection are moved to fiwareConnector.js
+you need to put parameter "orionCB" after it is copied to prevent from being corrupted
+orionCB.path is needed to use functions correctly
+
+route "/version" added. simply response the version of fiware-orionCB
+
+
+
+
 2020 05 05
 pm 10 56
 

@@ -2,6 +2,7 @@ const app = require("express")();
 const http = require("http");
 const httpserver = http.createServer(app);
 const io = require("socket.io")(httpserver);
+const fc = require("./fiwareConnector");
 var config = require("./config.js");
 
 //pug activation
@@ -14,21 +15,17 @@ app.get("/", function (req, res) {
   res.status(200).send("OK : 200");
 });
 
-app.get("/version",function (req, res) {
+app.get("/version", function (req, res) {
   //simple copy
   var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
-  
-  fiwareConfig.path = "/version";
-  
 
-  //get data from fiwareCB server
-  http.get(fiwareConfig, function (response) {
-    getFromCB(response, function (fiwareData) {
-      //render pug page with data recieved from fiwareCB
-      res.send(fiwareData);
-    });
+  fiwareConfig.path = "/version";
+
+  fc.getFiware(fiwareConfig, function (fiwareData) {
+    res.send(fiwareData);
   });
-})
+
+});
 
 //webpage main
 app.get("/main", function (req, res) {
@@ -38,17 +35,13 @@ app.get("/main", function (req, res) {
   if (reqType == null) fiwareConfig.path = "/v2/entities";
   else fiwareConfig.path = "/v2/entities?type=" + reqType;
 
-  //get data from fiwareCB server
-  http.get(fiwareConfig, function (response) {
-    getFromCB(response, function (fiwareData) {
-      //render pug page with data recieved from fiwareCB
-      res.render(__dirname + "/adminMain.pug", {
-        data: JSON.stringify(JSON.parse(fiwareData)),
-      });
+  fc.getFiware(fiwareConfig, function (fiwareData) {
+    res.render(__dirname + "/adminMain.pug", {
+      data: JSON.stringify(JSON.parse(fiwareData)),
     });
   });
-});
 
+});
 
 //using websocket
 io.on("connection", function (socket) {
@@ -60,46 +53,15 @@ io.on("connection", function (socket) {
 
     //change data in fiwareCB with the data by client
     var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
-    fiwareConfig.method = "PUT";
-    fiwareConfig.headers = {
-      "Content-Type": "application/json",
-      "Content-Length": JSON.stringify(writeData).length,
-    };
-
     fiwareConfig.path = "/v2/entities/" + data.id + "/attrs";
-
-    const req = http.request(fiwareConfig, function (res) {
-      console.log(`statusCode: ${res.statusCode}`);
-      var resData = "";
-      res.on("data", (data) => {
-        resData += data;
-      });
-      res.on("end", function () {
-        console.log(resData);
-        socket.emit("done", null);
-      });
-    });
-
-    req.on("error", (error) => {
-      console.log("error on putting data");
-      console.error(error);
-    });
-
-    req.write(JSON.stringify(writeData));
-    req.end();
+    fc.putFiware(fiwareConfig,writeData,function(fiwareData){
+      console.log("something changed")
+      socket.emit("done",null)
+    })  
   });
 });
 
 httpserver.listen(config.serverport, function () {
-  console.log("localhost:"+config.serverport);
+  console.log("localhost:" + config.serverport);
 });
 
-function getFromCB(response, callback) {
-  var CBdata = "";
-  response.on("data", function (chunk) {
-    CBdata += chunk;
-  });
-  response.on("end", function () {
-    callback(CBdata);
-  });
-}
