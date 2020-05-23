@@ -1,0 +1,12 @@
+{
+    "id" : "id",
+    "type" : "type",
+
+    "group" : {
+        "value" : "value",
+        "group" : "group"
+    },
+    "state" : "state",
+    "order" : "order"
+
+}
