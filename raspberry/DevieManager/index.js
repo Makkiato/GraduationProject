@@ -1,59 +1,69 @@
-const mqtt = require('mqtt');
-const broker = require("./config.js").broker;
+const config = require("./config.js");
+const mqtt = require("mqtt");
+const broker = config.broker;
 const client = mqtt.connect("mqtt://" + broker.host + ":" + broker.port);
 
-var deviceList = ["test1","test2","test3"]
+var deviceList = [];
+var changeLog = {};
+changeLog.add = [];
+changeLog.delete = [];
+
+console.log("device manager '" + config.name + "' initiate");
 
 client.on("connect", function () {
-    //excuted when connected
-    console.log("successfully connected to : " + broker.host + ":" + broker.port)
-    client.subscribe("/device/register", function (err) {
-        if (!err) {
-            // fiware reporting sequence
-            console.log("waiting for devices to register")
-        } else{
-            console.error(err)
-        }
-    });
-        
-    client.subscribe("/device/shutdown", function (err) {
-        if (!err) {
-            // fiware reporting sequence
-            console.log("waiting for devices to make will msg")
-        } else{
-            console.error(err)
-        }
-    });
+  console.log("successfully connected to : " + broker.host + ":" + broker.port);
+  client.subscribe("/device/register", function (err) {
+    if (!err) {
+      console.log("waiting for devices to register");
+    } else {
+      console.error(err);
+    }
+  });
 
-    client.subscribe("/device/list",function(err){
-        if (!err) {
-            // fiware reporting sequence
-            console.log("waiting for agent to request deviceList")
-        } else{
-            console.error(err)
-        }
-    })
+  client.subscribe("/device/shutdown", function (err) {
+    if (!err) {
+      console.log("waiting for devices to make will msg");
+    } else {
+      console.error(err);
+    }
+  });
+
+  client.subscribe("/order/devicelist", function (err) {
+    if (!err) {
+      console.log("waiting for agent to request deviceList");
+    } else {
+      console.error(err);
+    }
+  });
 });
 
-client.on("message", function (topic, message) {
+client.on("message", function (topic, message, packet) {
   // message is Buffer
   //excuted everytime get message from the topic subscribed
-  
-    if (topic == "/device/register") {
-        var parsed = JSON.parse(message)
-        deviceList.push(parsed.id);
 
-    }
-    else if (topic == "/device/shutdown"){
-        var parsed = JSON.parse(message)
-        var index = deviceList.findIndex(function(ele){
-            return ele == parsed;
-        })
-        deviceList.splice(index,1);
-    }
-    else if (topic == "/device/list"){
-        client.publish("/device/devices",deviceList.toString())
-    }
-    
-    console.log(message.toString())
+  if (topic == "/device/register") {
+    console.log("new device register");
+    var parsed = JSON.parse(message);
+    deviceList.push(parsed.id);
+    changeLog.add.push(parsed.id);
+    console.log(parsed.id);
+  } else if (topic == "/device/shutdown") {
+    console.log("shutdown processing");
+    var parsed = JSON.parse(message);
+    console.log(parsed.id);
+    var index = deviceList.findIndex(function (ele) {
+      return ele == parsed.id;
+    });
+    deviceList.splice(index, 1);
+    changeLog.delete.push(parsed.id);
+  } else if (topic == "/order/devicelist") {
+    console.log("agent requested devicelist");
+    var msg = {};
+    msg.list = deviceList;
+    msg.changeLog = changeLog;
+    msg.name = config.name;
+    client.publish("/device/devices", JSON.stringify(msg));
+    changeLog.add.length = 0;
+    changeLog.delete.length = 0;
+  }
 });

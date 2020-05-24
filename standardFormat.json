@@ -1,12 +1,19 @@
 {
-    "id" : "id",
-    "type" : "type",
-
-    "group" : {
-        "value" : "value",
-        "group" : "group"
+    "id": "bedroomLED5",
+    "type": "led",
+    "agent": {
+        "type": "string",
+        "value": "agent1",
+        "metadata": {}
     },
-    "state" : "state",
-    "order" : "order"
-
+    "order": {
+        "type": "string",
+        "value": "none",
+        "metadata": {}
+    },
+    "state": {
+        "type": "string",
+        "value": "off",
+        "metadata": {}
+    }
 }

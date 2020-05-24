@@ -7,13 +7,18 @@ var deviceInfo = {
   id: "bedroomLED",
   type: "led",
 
-  group: {
-    value: "my_own",
-    group: "none",
-  },
-  state: "off",
-  order: "none",
+  state: {
+    "value" : "off",
+    "type" : "string"
+  }
 };
+var registerOption = {
+  will :{
+    topic : "/device/shutdown",
+    payload : JSON.stringify(deviceInfo)
+  }
+}
 
 module.exports.broker = broker;
 module.exports.deviceInfo = deviceInfo;
+module.exports.registerOption = registerOption;

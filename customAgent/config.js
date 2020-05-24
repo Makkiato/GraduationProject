@@ -13,6 +13,12 @@ var coap = {
     port : "5683"
 }
 
+var agentInfo = {
+    id: "agent1",
+    type: "agent"
+}
+
 module.exports.coap = coap;
 module.exports.broker = broker;
 module.exports.orionCB = orionCB;
+module.exports.agentInfo = agentInfo;
