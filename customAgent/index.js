@@ -91,15 +91,18 @@ function shutdownToFiware(deviceId) {
 function reportToFiware(deviceData, connectionId) {
   // called in mqttConnector when device responsed about orders done
   var parsed = JSON.parse(deviceData);
+  var fiwareConfig = JSON.parse(JSON.stringify(orion));
+  fiwareConfig.path = "/v2/entities/" + parsed.id + "/attrs";
+  delete parsed.id;
+  delete parsed.type;
   parsed.group = {};
   parsed.agent = {};
   parsed.group.value = connectionId;
   parsed.group.type = "string";
   parsed.agent.value = agentInfo.id;
   parsed.agent.type = "string";
-  var fiwareConfig = JSON.parse(JSON.stringify(orion));
-  fiwareConfig.path = "/v2/entities";
-
+  
+  
   fc.putFiware(fiwareConfig, parsed, function (fiwareData) {
     console.log(fiwareData);
   });

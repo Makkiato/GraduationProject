@@ -1,10 +1,8 @@
 const mqtt = require("mqtt");
-var client;
-
 
 function init(broker, fiwarePost, fiwarePut, fiwareDelete, callback) {
   
-  client = mqtt.connect("mqtt://" + broker.host + ":" + broker.port);
+  var client = mqtt.connect("mqtt://" + broker.host + ":" + broker.port);
   // is will neccesary?
   var first = true
   
@@ -45,6 +43,14 @@ function init(broker, fiwarePost, fiwarePut, fiwareDelete, callback) {
         console.error(err);
       }
     });
+    client.subscribe("/order/+/response", function (err) {
+      if (!err) {
+        // fiware reporting sequence
+        console.log("waiting for order response");
+      } else {
+        console.error(err);
+      }
+    });
 
     setInterval(function () {
       client.publish("/order/devicelist", "");
@@ -65,8 +71,7 @@ function init(broker, fiwarePost, fiwarePut, fiwareDelete, callback) {
         client.deviceList = list;
         if(first){
             first = false;
-            client.name = parsed.name;
-            console.log(parsed.name)
+            client.name = parsed.name;           
             list.forEach((element) => {
                 client.publish("/info/" + element, ""); // response with device infromation through topic "/info/deviceID/response"
               })
@@ -101,10 +106,6 @@ function init(broker, fiwarePost, fiwarePut, fiwareDelete, callback) {
     }
   });
   
-}
-
-function pub(topic, msg) {
-  client.publish(topic, msg);
 }
 
 module.exports.init = init;

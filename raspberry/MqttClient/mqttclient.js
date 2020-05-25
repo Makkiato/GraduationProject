@@ -21,12 +21,13 @@ client.on("message", function (topic, message) {
   //excuted everytime get message from the topic subscribed
   if(topic == "/order/"+deviceInfo.id){
     console.log("order recieved")
-    console.log(JSON.parse(message).order.value)
+    var parsed = JSON.parse(message)  
     //proccess order here
-
+    deviceInfo.state.value = parsed.order.value       
     client.publish("/order/"+deviceInfo.id+"/response",JSON.stringify(deviceInfo))
   } else if(topic == "/info/"+deviceInfo.id){
     console.log("info request recieved")
+    
     client.publish("/info/"+deviceInfo.id+"/response",JSON.stringify(deviceInfo))
   }
   else if (topic.startsWith("/mymind")){

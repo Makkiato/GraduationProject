@@ -1,6 +1,11 @@
 {
     "id": "bedroomLED5",
     "type": "led",
+    "group" : {
+        "type" : "string",
+        "value" : "mqtt_broker1",
+        "metadata": {}
+    },
     "agent": {
         "type": "string",
         "value": "agent1",
