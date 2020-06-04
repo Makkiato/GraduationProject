@@ -9,7 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
     "bootstrap": "^4.5.0",
+=======
+    "express": "^4.17.1",
+>>>>>>> 56fffe07b0ecac8db7e89601c281c463db95a88e
     "pug": "^2.0.4",
     "socket.io": "^2.3.0"
   },
