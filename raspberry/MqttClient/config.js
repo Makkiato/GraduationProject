@@ -5,16 +5,26 @@ var broker = {
 
 var deviceInfo = {
   id: "bedroomLED",
-  type: "led",
+  type: "device",
+
+  deviceType :{
+    "type" : "device",
+    "value" : "led"
+  },
 
   state: {
     "value" : "off",
     "type" : "string"
+  },
+
+  work: {
+    value: ["turn on","turn off"],
+    type: "action"
   }
 };
 var registerOption = {
   will :{
-    topic : "/device/shutdown",
+    topic : "/terminate/"+deviceInfo.id,
     payload : JSON.stringify(deviceInfo)
   }
 }

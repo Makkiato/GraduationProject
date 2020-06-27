@@ -2,6 +2,7 @@ const config = require("./config");
 const broker = config.broker;
 const orion = config.orionCB;
 const agentInfo = config.agentInfo;
+const randomString = require("randomstring")
 
 // consat coap = require('some coap module');
 const mc = require("./mqttConnector");
@@ -12,6 +13,10 @@ var mqttList = {};
 mc.init(broker, registerToFiware, reportToFiware, shutdownToFiware, function (
   client
 ) {
+  client.name = randomString.generate();
+  while( mqttList.hasOwnProperty(client.name)){
+    client.name = randomString.generate();
+  }
   console.log("mqtt connection established");
   console.log(client.name);
   mqttList[client.name] = client;

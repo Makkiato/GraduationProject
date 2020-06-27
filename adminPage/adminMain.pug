@@ -15,36 +15,32 @@ script.
   var parsed = JSON.parse(data)
   var table = document.getElementById('table')
   //prepare for innerHtml
-  const title = '<table border="3"><tr><td>id</td><td>machine type</td><td>status</td><td>control</td></tr>'
+  const title = '<table border="3"><tr>+<td>id</td><td>device type</td><td>agent</td><td>group</td><td>status</td><td>control</td></tr>'
 
   var content = title.toString()
   //buliding innerHtml string with data
   for(var i = 0; i<parsed.length; i++){
-    content = content.concat('<tr>')
-    var key = Object.keys(parsed[i])
-    
-    for(var j =0; j<key.length; j++){
-      var currentKey = key[j]
-      
-      if(currentKey == 'value'){
-        var displayData = parsed[i].value.value
-        content = content.concat('<td>' + displayData + '</td>')
-      }
-      else{
+      content = content.concat('<tr>')
+      content = content.concat('<td>' + parsed[i].id + '</td>')
+      content = content.concat('<td>' + parsed[i].deviceType.value + '</td>')
+      content = content.concat('<td>' + parsed[i].agent.value + '</td>')
+      content = content.concat('<td>' + parsed[i].group.value + '</td>')
+      content = content.concat('<td>' + parsed[i].state.value + '</td>')
 
-        var displayData = parsed[i][currentKey]
-        content = content.concat('<td>' + displayData + '</td>')
-      }    
+      var selectString = "<select id = 'select"+(1+i)+"'>"+
+      "<option value ='default'>no change</option>"
+
+      for(var j=0; j<parsed[i].work.value.length; j++){
+        selectString = selectString.concat("<option value ='"+parsed[i].work.value[j]+"'>"+ parsed[i].work.value[j] +"</option>")
+      }
+      selectString = selectString.concat("</select>");
+      content = content.concat('<td>' + selectString + '</td>');
+      content = content.concat('</tr>');
     }
 
-    var selectString = "<select id = 'select"+(1+i)+"'>"+
-      "<option value ='default'>no change</option>"+
-      "<option value ='on'>turn on</option>"+
-      "<option value ='off'>turn off</option>"+
-      "</select>"
-    content = content.concat('<td>' + selectString + '</td>');
-    content = content.concat('</tr>');
-  }
+
+
+  
   content = content.concat('</table>')
   table.innerHTML = content
 
@@ -54,13 +50,14 @@ script.
     const selectedBox = document.getElementById('select'+index);
     //adding event handler for each selectbox
     selectedBox.addEventListener("change" ,function(){
-      var valueSend = (parsed[index-1])["value"]
-      valueSend.value = selectedBox.options[selectedBox.selectedIndex].value
-      var dataSend = {'id' : (parsed[index-1])["id"], 'value' : valueSend}
+      var orderSend = {}
+      orderSend.type = "string"
+      orderSend.value = selectedBox.options[selectedBox.selectedIndex].value
+      var dataSend = {'id' : (parsed[index-1])["id"],'type' : 'order' ,'order' : orderSend, 'agent' : (parsed[index-1])["agent"], 'group' : (parsed[index-1])["group"]}
       socket.emit('change',dataSend);
       socket.on('done',function(data){
         window.location.reload();
       })
     });
   }
-  
+

@@ -1,6 +1,12 @@
 {
     "id": "bedroomLED5",
-    "type": "led",
+    "type": "device",
+
+    "deviceType" :{
+        "type" : "device",
+        "value" : "specific device type"
+    },
+
     "group" : {
         "type" : "string",
         "value" : "mqtt_broker1",
@@ -20,5 +26,9 @@
         "type": "string",
         "value": "off",
         "metadata": {}
-    }
+    },
+    "work": {
+        "value": ["some","actions","can","be","done"],
+        "type": "action"
+      }
 }
