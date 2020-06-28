@@ -20,7 +20,7 @@ def rc_time (pin_to_circuit):
 
     #Change the pin back to input
     GPIO.setup(pin_to_circuit, GPIO.IN)
-  
+
     #Count until the pin goes high
     while (GPIO.input(pin_to_circuit) == GPIO.LOW):
         count += 1
@@ -28,8 +28,7 @@ def rc_time (pin_to_circuit):
     return count
 
 try:
-    while True:
-        print(rc_time(pin_to_circuit))
+    print(rc_time(pin_to_circuit))
         
 except KeyboardInterrupt:
     pass
