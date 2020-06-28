@@ -43,3 +43,10 @@ client.on("message", function (topic, message) {
   
   
 });
+
+test = execa("python",["../SensorControl/LightSensorRead.py"])
+test.stdout.pipe(process.stdout);
+(async () => {
+  const {stdout} = await test;
+  console.log('child output:', stdout);
+})();

@@ -52,31 +52,9 @@ client.on("message", function (topic, message) {
   }
 });
 
-var test = execa("python",["test.py","1"])
+test = execa("python",["../SensorControl/LightSensorRead.py"])
 test.stdout.pipe(process.stdout);
 (async () => {
   const {stdout} = await test;
   console.log('child output:', stdout);
 })();
-
-test = execa("python",["test.py","12"])
-test.stdout.pipe(process.stdout);
-(async () => {
-  const {stdout} = await test;
-  console.log('child output:', stdout);
-})();
-
-test = execa("python",["test.py","123"])
-test.stdout.pipe(process.stdout);
-(async () => {
-  const {stdout} = await test;
-  console.log('child output:', stdout);
-})();
-
-test = execa("python",["test.py","1234"])
-test.stdout.pipe(process.stdout);
-(async () => {
-  const {stdout} = await test;
-  console.log('child output:', stdout);
-})();
-
