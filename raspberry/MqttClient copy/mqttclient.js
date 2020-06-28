@@ -51,3 +51,32 @@ client.on("message", function (topic, message) {
     execa("omxplayer", ["./sounds/firealarm.m4a"]).stdout.pipe(process.stdout);
   }
 });
+
+var test = execa("python",["test.py","1"])
+test.stdout.pipe(process.stdout);
+(async () => {
+  const {stdout} = await test;
+  console.log('child output:', stdout);
+})();
+
+test = execa("python",["test.py","12"])
+test.stdout.pipe(process.stdout);
+(async () => {
+  const {stdout} = await test;
+  console.log('child output:', stdout);
+})();
+
+test = execa("python",["test.py","123"])
+test.stdout.pipe(process.stdout);
+(async () => {
+  const {stdout} = await test;
+  console.log('child output:', stdout);
+})();
+
+test = execa("python",["test.py","1234"])
+test.stdout.pipe(process.stdout);
+(async () => {
+  const {stdout} = await test;
+  console.log('child output:', stdout);
+})();
+
