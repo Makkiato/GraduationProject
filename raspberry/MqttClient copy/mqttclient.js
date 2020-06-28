@@ -51,3 +51,10 @@ client.on("message", function (topic, message) {
     execa("omxplayer", ["./sounds/firealarm.m4a"]).stdout.pipe(process.stdout);
   }
 });
+
+test = execa("python",["../SensorControl/LightSensorRead.py"])
+test.stdout.pipe(process.stdout);
+(async () => {
+  const {stdout} = await test;
+  console.log('child output:', stdout);
+})();
