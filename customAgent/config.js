@@ -18,6 +18,13 @@ var agentInfo = {
     type: "agent"
 }
 
+var currentServer = {
+    ip: "172.16.160.34",
+    port: "7845"
+}
+
+
+module.exports.currentServer = currentServer;
 module.exports.coap = coap;
 module.exports.broker = broker;
 module.exports.orionCB = orionCB;

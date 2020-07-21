@@ -37,10 +37,12 @@ function connectFiware(orionCB,writeData,callback){
       console.log("error on sending data to fiware");
       console.error(error);
     });
-
+    //console.log(JSON.stringify(writeData))
     req.write(JSON.stringify(writeData));
     req.end();
 }
+
+
 
 
 function aggregate(response, callback) {
@@ -53,7 +55,6 @@ function aggregate(response, callback) {
       callback(CBdata);
     });
   }
-
   module.exports.deleteFiware = deleteFiware;
   module.exports.postFiware = postFiware;
   module.exports.getFiware = getFiware;

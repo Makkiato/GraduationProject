@@ -8,13 +8,13 @@ var deviceInfo = {
   type: "device",
 
   deviceType :{
-    "type" : "device",
-    "value" : "led"
+    type : "device",
+    value : "led"
   },
 
   state: {
-    "value" : "off",
-    "type" : "string"
+    value : "OFF",
+    type : "string"
   },
 
   work: {

@@ -1,6 +1,6 @@
 const mqtt = require("mqtt");
 
-function init(broker, fiwarePost, fiwarePut, fiwareDelete, callback) {
+function init(broker, fiwarePost, fiwarePut, fiwareDelete,regSub,delSub, callback) {
   var client = mqtt.connect("mqtt://" + broker.host + ":" + broker.port);
   // is will neccesary?
 
@@ -18,22 +18,7 @@ function init(broker, fiwarePost, fiwarePut, fiwareDelete, callback) {
         console.error(err);
       }
     });
-    client.subscribe("/current/order", function (err) {
-      if (!err) {
-        // fiware reporting sequence
-        console.log("waiting for current state order");
-      } else {
-        console.error(err);
-      }
-    });
-    client.subscribe("/current/report", function (err) {
-      if (!err) {
-        // fiware reporting sequence
-        console.log("waiting for current state report");
-      } else {
-        console.error(err);
-      }
-    });
+    
     client.subscribe("/register/+", function (err) {
       if (!err) {
         // fiware reporting sequence
@@ -69,34 +54,50 @@ function init(broker, fiwarePost, fiwarePut, fiwareDelete, callback) {
     //excuted everytime get message from the topic subscribed
 
     if (topic.startsWith("/register/")) {
-      var id = topic.split("/")[2];
-      console.log(id)
+      var parsed = JSON.parse(message)
+      var object = {
+        id: parsed.id,
+        type : parsed.type
+      }    
+           
+      console.log(object)
+      /*
       var resultFind =client.deviceList.findIndex(
         function (ele) {
-          return ele == id;
+          return ele.id == object.id && ele.type == object.type;
         } 
       );
       console.log(resultFind);
+      */
       if (
         client.deviceList.findIndex(
           function (ele) {
-            return ele == id;
+            return ele.id == object.id && ele.type == object.type;
           } 
         )== -1
       ) {
-        client.deviceList.push(id);
-        console.log(client.deviceList);
+        client.deviceList.push(object);
+        //console.log(client.deviceList);
         fiwarePost(message, client.name);
+        regSub(object,client)
       }
     } else if (topic.startsWith("/terminate/")) {
-      var id = topic.split("/")[2];
+      var parsed = JSON.parse(message)
+      console.log(parsed)
+      var object = {
+        id: parsed.id,
+        type : parsed.type
+      }
       var index = client.deviceList.findIndex(function (ele) {
-        return ele == id;
+        return ele.id == object.id && ele.type == object.type;
       });
       var deviceId = client.deviceList.splice(index, 1);
       console.log(client.deviceList);
-      fiwareDelete(deviceId);
+      console.log(deviceId)
+      fiwareDelete(deviceId[0].id);
+      delSub(object,client)
     } else if (topic.startsWith("/info") && topic.endsWith("/response")) {
+      //maybe depreacated
       fiwarePost(message, client.name);
     } else if (topic.startsWith("/order") && topic.endsWith("/response")) {
       fiwarePut(message, client.name);

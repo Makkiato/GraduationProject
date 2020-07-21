@@ -8,8 +8,8 @@ var deviceInfo = {
   type: "device",
 
   deviceType :{
-    "type" : "device",
-    "value" : "bell"
+    type : "device",
+    value : "bell"
   },
   state: {
     value: "standBy",

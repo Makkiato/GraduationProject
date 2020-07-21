@@ -45,29 +45,41 @@ app.get("/main", function (req, res) {
 
 //using websocket
 io.on("connection", function (socket) {
+  setInterval(function () {
+    console.log('Interval work')
+    var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
+    fiwareConfig.path = "/v2/entities";
+  
+    fc.getFiware(fiwareConfig, function (fiwareData) {
+      var useData = JSON.parse(fiwareData).filter(
+        (data) => data.type != "order"
+      );
+      
+      socket.emit("update", useData);
+      
+    });
+  }, 3000);
   console.log("socket on!");
   //detect select box change
   socket.on("change", function (data) {
+    var writeData = {
+      order : {
+        type : "order",
+        value : data.order.value
+      }
+    };
+    
+    //console.log(data);
+    //console.log(writeData);
     //change data in fiwareCB with the data by client
     var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
-    fiwareConfig.path = "/v2/entities/";
-    console.log(data);
-    fc.postFiware(fiwareConfig, data, function (fiwareData) {
+    fiwareConfig.path = "/v2/entities/"+data.id+"/attrs";
+    fc.postFiware(fiwareConfig, writeData, function (fiwareData) {
       console.log("something changed");
-      console.log(fiwareData);
-    });
-    fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
-    fiwareConfig.path = "/v2/entities/" + data.id + "/attrs/state";
-    var val = "order processing : " + data.order.value;
-    writeData = { value: val, type: "string" };
-    console.log(writeData);
-
-    fc.putFiware(fiwareConfig, writeData, function (fiwareData) {
-      console.log("waiting for result");
-      console.log(fiwareData);
       socket.emit("done", null);
     });
   });
+  
 });
 
 httpserver.listen(config.serverport, function () {
