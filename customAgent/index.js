@@ -180,6 +180,10 @@ function registerToFiware(deviceData, connectionId) {
     value: agentInfo.id,
     type: "string",
   };
+  parsed.order = {
+    value: 'default',
+    type: 'order'
+  }
 
   var fiwareConfig = JSON.parse(JSON.stringify(orion));
   fiwareConfig.path = "/v2/entities";
