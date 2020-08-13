@@ -5,9 +5,13 @@ head
   meta(http-equiv='X-UA-Compatible' content='ie=edge')
   title
     | Welcome to fiware project
-script(src='/socket.io/socket.io.js')
+  script(src='http://localhost:7777/socket.io/socket.io.js')
 div(id = 'table')
+div(id = 'chartArea')
+  canvas(id='chart')
+
 script.
+  
   //preparing websocket
   var socket = io();
   //data from fiwareCB -> nodejs server
@@ -15,8 +19,8 @@ script.
   var parsed = JSON.parse(data)
   var table = document.getElementById('table')
   //prepare for innerHtml
-  const title = '<table border="3"><tr>+<td>id</td><td>device type</td><td>agent</td><td>group</td><td>status</td><td>control</td></tr>'
-
+  const title = '<table border="3"><tr><td>id</td><td>device type</td><td>agent</td><td>group</td><td>control</td></tr>'
+  console.log(parsed)
   rebuildTable(parsed)
   attatchEventListner(parsed)
   socket.on('update',function(data){
@@ -25,21 +29,22 @@ script.
     rebuildTable(data)
     attatchEventListner(data)
     
+
   })
 
   function rebuildTable(parsedData){   
 
     content = title.toString()
     for(var i = 0; i<parsedData.length; i++){
-    
-    
+
+
 
       content = content.concat('<tr>')
       content = content.concat('<td>' + parsedData[i].id + '</td>')
       content = content.concat('<td>' + parsedData[i].type + '</td>')           
       content = content.concat('<td>' + parsedData[i].agent.value + '</td>')
       content = content.concat('<td>' + parsedData[i].group.value + '</td>')
-      content = content.concat('<td>' + parsedData[i].state.value + '</td>')
+      //content = content.concat('<td>' + parsedData[i].state.value + '</td>')
 
 
       var selectString = "<select id = 'select"+(1+i)+"'>"+
@@ -50,7 +55,12 @@ script.
       }
       selectString = selectString.concat("</select>");
       content = content.concat('<td>' + selectString + '</td>');
-      content = content.concat('</tr>');
+      content = content.concat('</tr><tr><td>values</td></tr><tr>');
+
+      parsedData[i].history.value.column.name.forEach(element => {content=content.concat('<td>'+element+'</td>')})
+      content = content.concat('<td>details</td></tr><tr>')
+      parsedData[i].history.value.column.name.forEach(element => {content=content.concat('<td>'+parsedData[i][element].value+'</td>')})
+      content = content.concat(`<td><a href = "/detail?id=`+parsedData[i].id+`" target = "_blank">show details</a></td></tr>`)
     }
   content = content.concat('</table>')
   table.innerHTML = content
@@ -59,19 +69,24 @@ script.
   function attatchEventListner(parsed){
     console.log(parsed)
     for(var i = 0; i < parsed.length; i++){
-    const index = i+1
-    const selectedBox = document.getElementById('select'+index);
-    //adding event handler for each selectbox
-    selectedBox.addEventListener("change" ,function(){
-      var orderSend = {}
-      orderSend.type = "string"
-      orderSend.value = selectedBox.options[selectedBox.selectedIndex].value
-      var dataSend = {'id' : (parsed[index-1])["id"],'type' : 'order' ,'order' : orderSend, 'agent' : (parsed[index-1])["agent"], 'group' : (parsed[index-1])["group"]}
-      socket.emit('change',dataSend);
-      socket.on('done',function(data){
-        //window.location.reload();
-      })
+      const index = i+1
+      const selectedBox = document.getElementById('select'+index);
+      //adding event handler for each selectbox
+      selectedBox.addEventListener("change" ,function(){
+        var orderSend = {}
+        orderSend.type = "string"
+        orderSend.value = selectedBox.options[selectedBox.selectedIndex].value
+        var dataSend = {'id' : (parsed[index-1])["id"],'type' : 'order' ,'order' : orderSend, 'agent' : (parsed[index-1])["agent"], 'group' : (parsed[index-1])["group"]}
+        socket.emit('change',dataSend);
+        socket.on('done',function(data){
+          //window.location.reload();
+        })
+      });
+    }
+  }
 
-    });
-  }
-  }
+  
+
+
+  
+  

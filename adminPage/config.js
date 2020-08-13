@@ -3,6 +3,11 @@ var orionCB = {
     port : "1026"
 }
 
+var history = {
+    maximumRecord: 20,
+
+}
+
 const serverport = 7777
 
 module.exports.serverport = serverport;

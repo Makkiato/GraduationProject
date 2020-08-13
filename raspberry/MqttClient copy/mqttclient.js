@@ -17,7 +17,19 @@ client.on("connect", function () {
   client.subscribe("/order/" + deviceInfo.id, function (err) {});
   client.subscribe("/info/" + deviceInfo.id, function (err) {});
   console.log(JSON.stringify(deviceInfo));
-  client.publish("/register/" + deviceInfo.id, JSON.stringify(deviceInfo));
+
+  var sendMSG = JSON.parse(JSON.stringify(deviceInfo))
+  sendMSG.temperature ={
+    value : Math.floor((Math.random() * 10)+10),
+    type : 'Numeric'
+  }
+
+  sendMSG.humidity ={
+    value : Math.floor((Math.random() * 30)+10),
+    type : 'Numeric'
+  }
+
+  client.publish("/register/" + deviceInfo.id, JSON.stringify(sendMSG));
 
   setInterval(function () {
     console.log(`processing : ${action}`);
@@ -42,9 +54,20 @@ client.on("connect", function () {
         }
         break
     }
+
+    var sendMSG = JSON.parse(JSON.stringify(deviceInfo))
+  sendMSG.temperature ={
+    value : Math.floor((Math.random() * 10)+10),
+    type : 'Numeric'
+  }
+
+  sendMSG.humidity ={
+    value : Math.floor((Math.random() * 30)+10),
+    type : 'Numeric'
+  }
     client.publish(
       "/order/" + deviceInfo.id + "/response",
-      JSON.stringify(deviceInfo)
+      JSON.stringify(sendMSG)
     );
   }, 3000);
 });
@@ -59,15 +82,33 @@ client.on("message", function (topic, message) {
     
   } else if (topic == "/info/" + deviceInfo.id) {
     console.log("info request recieved");
-
+    var sendMSG = JSON.parse(JSON.stringify(deviceInfo))
+    sendMSG.temperature ={
+      value : Math.floor((Math.random() * 10)+10),
+      type : 'Numeric'
+    }
+  
+    sendMSG.humidity ={
+      value : Math.floor((Math.random() * 30)+10),
+      type : 'Numeric'
+    }
     client.publish(
       "/info/" + deviceInfo.id + "/response",
-      JSON.stringify(deviceInfo)
+      JSON.stringify(sendMSG)
     );
   } else if (topic == "/order/devicelist") {
     console.log("devicelist request recieved");
-
-    client.publish("/register/" + deviceInfo.id, JSON.stringify(deviceInfo));
+    var sendMSG = JSON.parse(JSON.stringify(deviceInfo))
+    sendMSG.temperature ={
+      value : Math.floor((Math.random() * 10)+10),
+      type : 'Numeric'
+    }
+  
+    sendMSG.humidity ={
+      value : Math.floor((Math.random() * 30)+10),
+      type : 'Numeric'
+    }
+    client.publish("/register/" + deviceInfo.id, JSON.stringify(sendMSG));
   } else if (topic.startsWith("/mymind")) {
     execa("omxplayer", ["./sounds/firealarm.m4a"]).stdout.pipe(process.stdout);
   }

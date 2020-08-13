@@ -20,6 +20,11 @@ var deviceInfo = {
   work: {
     value: ["turn on","turn off"],
     type: "action"
+  },
+
+  history: {
+    value: ['state','humidity','temperature'],
+    type : 'record'
   }
 };
 var registerOption = {

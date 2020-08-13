@@ -19,6 +19,11 @@ var deviceInfo = {
   work: {
     value: ["Ring"],
     type: "action"
+  },
+
+  history: {
+    value: ['state','humidity','temperature'],
+    type : 'record'
   }
 };
 var registerOption = {

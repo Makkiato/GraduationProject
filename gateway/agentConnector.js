@@ -10,9 +10,6 @@ function init(agent,processOrder,callback) {
          processOrder(data)
       })
 
-      socket.on('devices',function(){
-        console.log('ack')
-      })
 
       callback(socket)
   });

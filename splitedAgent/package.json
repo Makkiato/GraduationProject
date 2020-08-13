@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "moment": "^2.27.0",
     "randomstring": "^1.1.5",
     "socket.io": "^2.3.0"
   }
