@@ -2,8 +2,8 @@ import sys
 import RPi.GPIO as GPIO
 import time
 
-## 인자받기
-#print('sys.argv 길이', len(sys.argv))
+## input argument
+#print('sys.argv length', len(sys.argv))
 
 #for arg in sys.argv :
     print('arg value = ', arg)
