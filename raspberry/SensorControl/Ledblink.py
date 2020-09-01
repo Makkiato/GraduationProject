@@ -8,6 +8,11 @@ import time
 #for arg in sys.argv :
 #    print('arg value = ', arg)
 
+LED = 12
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(LED, GPIO.OUT, initial=False)
+
 if len(sys.argv) != 2:
     print("Set default term : 0.5")
     term = 0.5
@@ -23,14 +28,12 @@ else:
 
 
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(4,GPIO.OUT)
 
 try:
     while True :
-        GPIO.output(4, True)
+        GPIO.output(LED, True)
         time.sleep(term)
-        GPIO.output(4, False)
+        GPIO.output(LED, False)
         time.sleep(term)
 
 except KeyboardInterrupt :
