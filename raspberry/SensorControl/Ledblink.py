@@ -6,9 +6,9 @@ import time
 #print('sys.argv length', len(sys.argv))
 
 #for arg in sys.argv :
-    print('arg value = ', arg)
+#    print('arg value = ', arg)
 
-#if len(sys.argv) != 2:
+if len(sys.argv) != 2:
     print("Set default term : 0.5")
     term = 0.5
 
