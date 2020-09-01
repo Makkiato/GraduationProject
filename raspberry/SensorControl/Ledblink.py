@@ -13,7 +13,7 @@ LED = 18
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED, GPIO.OUT, initial=False)
 
-if len(sys.argv) != 2:
+if len(sys.argv) >= 2:
     print("Set default term : 0.5")
     term = 0.5
 

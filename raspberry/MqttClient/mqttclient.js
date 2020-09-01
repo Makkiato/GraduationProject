@@ -110,10 +110,10 @@ client.on("message", function (topic, message) {
   }
 });
 
-/*
-test = execa("python",[__dirname+"/../SensorControl/LightSensorRead.py"])
+
+var test = execa("python",[__dirname+"/../SensorControl/Ledblink.py","2","3"])
 test.stdout.pipe(process.stdout);
 (async () => {
   const {stdout} = await test;
   console.log('child output:', stdout);
-})();*/
+})();
