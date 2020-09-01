@@ -1,8 +1,17 @@
+import sys
 import RPi.GPIO as GPIO
 import time
 
 GPIO.setmode(GPIO.BCM)
 #GPIO.setup(21,GPIO.OUT)
+
+## 인자받기
+print('sys.argv 길이', len(sys.argv))
+
+for arg in sys.argv :
+    print('arg value = ', arg)
+
+##if len(sys.argv) !=
 
 pin_to_circuit = 21
 
