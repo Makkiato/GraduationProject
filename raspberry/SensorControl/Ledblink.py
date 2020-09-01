@@ -8,7 +8,7 @@ import time
 #for arg in sys.argv :
 #    print('arg value = ', arg)
 
-LED = 12
+LED = 18
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED, GPIO.OUT, initial=False)
