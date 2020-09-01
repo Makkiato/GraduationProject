@@ -20,7 +20,7 @@ if len(sys.argv) != 2:
 
 else:
     try :
-        term = int(sys.argv[1])
+        term = float(sys.argv[1])
     except : 
         print("Wrong argument. You should input INT blink term (0.5~)")
         print("Set default term : 0.5")
