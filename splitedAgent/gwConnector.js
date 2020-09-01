@@ -3,15 +3,17 @@ const server = http.createServer();
 const io = require("socket.io")(server);
 const fc = require("./fiwareConnector");
 const listener = require("./subListener");
-const hi = require("./history");
+//const hi = require("./history");
 const randomString = require("randomstring");
 const moment = require("moment");
-const { time } = require("console");
+
+
 
 var connectors = {};
 
 function init(orion, agentInfo, listenerIP, listnerPort, callback) {
   io.on("connection", (client) => {
+    
     console.log("connected");
     do {
       io.name = randomString.generate();
@@ -27,7 +29,7 @@ function init(orion, agentInfo, listenerIP, listnerPort, callback) {
         type: "agent",
       };
 
-      var history = markHistory(parsed);
+      //var history = markHistory(parsed);
 
       var subConfig = JSON.parse(JSON.stringify(orion));
       subConfig.path = "/v2/subscriptions/";
@@ -49,10 +51,6 @@ function init(orion, agentInfo, listenerIP, listnerPort, callback) {
       };
       fc.postFiware(subConfig, payload, function (fiwareData) {});
 
-      parsed.history = {
-        value: history,
-        type: "history",
-      };
 
       parsed.order = {
         value: "default",
@@ -108,14 +106,12 @@ function init(orion, agentInfo, listenerIP, listnerPort, callback) {
       console.log("report");
       var parsed = data;
       var fiwareConfig = JSON.parse(JSON.stringify(orion));
-      var history = markHistory(parsed);
+      //var history = markHistory(parsed);
       fiwareConfig.path = "/v2/entities/" + parsed.id + "/attrs";
       delete parsed.id;
       delete parsed.type;
-      parsed.history = {
-        value: history,
-        type: "history",
-      };
+      
+      console.log(moment().utcOffset(540))
       parsed.group = {
         value: parsed.group,
         type: "group",
@@ -140,6 +136,7 @@ function emit(data) {
   var connector = connectors[data.id];
   connector.emit("order", data);
 }
+/*
 function markHistory(parsed) {
   var column = {
     name: [],
@@ -152,8 +149,9 @@ function markHistory(parsed) {
     column.value[0].push(parsed[element].value);
   });
 
-  return hi.add(parsed, { name: "time", value: [moment().utcOffset(540)] }, column);
-}
+  return hi.add(parsed, { name: "time", value: [moment()] }, column);
+}*/
+
 
 module.exports.init = init;
 module.exports.emit = emit;

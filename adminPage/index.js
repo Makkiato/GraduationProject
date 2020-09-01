@@ -3,9 +3,13 @@ const http = require("http");
 const httpserver = http.createServer(app);
 const io = require("socket.io")(httpserver);
 const fc = require("./fiwareConnector");
+const sql = require("./mysqlConnector")
+const hi = require("./history")
 
 
 var config = require("./config.js");
+
+var latest={};
 
 //pug activation
 app.engine("pug", require("pug").__express);
@@ -37,7 +41,7 @@ app.get("/main", function (req, res) {
   else fiwareConfig.path = "/v2/entities?type=" + reqType;
 
   fc.getFiware(fiwareConfig, function (fiwareData) {
-    var useData = JSON.parse(fiwareData).filter((data) => data.type != "order");
+    var useData = JSON.parse(fiwareData)     
 
     res.render(__dirname + "/adminMain.pug", {
       data: JSON.stringify(useData),
@@ -45,19 +49,9 @@ app.get("/main", function (req, res) {
   });
   //using websocket
   io.on("connection", function (socket) {
-    setInterval(function () {
-      console.log("Interval work");
-      var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
-      fiwareConfig.path = "/v2/entities";
-
-      fc.getFiware(fiwareConfig, function (fiwareData) {
-        var useData = JSON.parse(fiwareData).filter(
-          (data) => data.type != "order"
-        );
-
-        socket.emit("update", useData);
-      });
-    }, 3000);
+    setInterval(function(){
+      socket.emit("update", latest);
+    },3000)
     console.log("socket on!");
     //detect select box change
     socket.on("change", function (data) {
@@ -83,40 +77,82 @@ app.get("/main", function (req, res) {
 
 app.get("/detail", function (req, res) {
   var target = req.query.id;
+  var maximum = req.query.number
+  var interval = req.query.interval
+  if(maximum == undefined) maximum = 10
+
   if (target == undefined) {
     res.status(400).send("no id specified");
   } else {
-    var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
-    fiwareConfig.path = "/v2/entities/" + target + "/attrs/history";
-    fc.getFiware(fiwareConfig, function (fiwareData) {
-      var useData = JSON.parse(fiwareData)
-      /*var useData ={
-        id: "test",
-        type: "test",
-        agent: "test",
-        row: {
-          name: "test",
-          value: [1, 2, 3],
-        },
-        column: {
-          name: ["one", "two", "three", "four", "five"],
-          value: [
-            [1, 2, 3, 4, 5],
-            [11, 22, 33, 44, 55],
-            [111, 222, 333, 444, 555],
-          ],
-        },
-      };*/
-
-      res.render(__dirname + "/detail.pug", 
-        {data : JSON.stringify(useData)}
+    
+    sql.findItem(target, maximum,function (sqlData) {
+      hi.parseLine(sqlData,function(chartData){
+        res.render(__dirname + "/detail.pug", 
+        {data : JSON.stringify(chartData)}
       );
+      })
+      //chart에 맞게 변환
+      
+      
       
     });
 
   }
 });
 
+app.get("/table", function (req,res){
+  useDataTable(req,res)
+})
+
+function useDataTable(req,res){
+  var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
+  var reqType = req.query.type;
+  if (reqType == null) fiwareConfig.path = "/v2/entities?options=keyValues";
+  else fiwareConfig.path = "/v2/entities?options=keyValues&type=" + reqType;
+
+  fc.getFiware(fiwareConfig, function (fiwareData) {
+    var useData = JSON.parse(fiwareData)
+      
+
+    res.render(__dirname + "/mainTable.pug", {
+      data: JSON.stringify(useData),
+    });
+  });
+}
+
 httpserver.listen(config.serverport, function () {
   console.log("localhost:" + config.serverport);
 });
+
+setInterval(function () {
+  console.log("Interval work");
+  var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
+  fiwareConfig.path = "/v2/entities";
+
+  fc.getFiware(fiwareConfig, function (fiwareData) {
+    var useData = JSON.parse(fiwareData).filter(
+      (data) => data.type != "order"
+    );
+
+    useData.forEach( (ele) => {
+      updateDB(ele)
+    })
+
+    latest = useData
+    
+  });
+}, 3000);
+
+function updateDB(object){
+  var data =  {
+    id : object.id,
+    type : object.type
+  }
+  console.log(object)
+  object.history.value.forEach( (ele) =>{
+    data[ele] = object[ele].value
+  })
+  console.log(data)
+  sql.addItem(data)
+
+}

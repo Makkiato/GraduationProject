@@ -57,9 +57,9 @@ script.
       content = content.concat('<td>' + selectString + '</td>');
       content = content.concat('</tr><tr><td>values</td></tr><tr>');
 
-      parsedData[i].history.value.column.name.forEach(element => {content=content.concat('<td>'+element+'</td>')})
+      parsedData[i].history.value.forEach(element => {content=content.concat('<td>'+element+'</td>')})
       content = content.concat('<td>details</td></tr><tr>')
-      parsedData[i].history.value.column.name.forEach(element => {content=content.concat('<td>'+parsedData[i][element].value+'</td>')})
+      parsedData[i].history.value.forEach(element => {content=content.concat('<td>'+parsedData[i][element].value+'</td>')})
       content = content.concat(`<td><a href = "/detail?id=`+parsedData[i].id+`" target = "_blank">show details</a></td></tr>`)
     }
   content = content.concat('</table>')

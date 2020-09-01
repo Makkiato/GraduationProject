@@ -1,7 +1,3 @@
-var record = {};
-
-var maximumRecord = 10;
-
 /*
     id : {        
         type
@@ -17,8 +13,54 @@ var maximumRecord = 10;
         }
     }
 */
-function init(config) {
-  maximumRecord = config.maximumRecord;
+function parseDataset(data) {
+  var sorted = {};
+  var times = [];
+  var dataset = {
+    labels: times,
+    datasets: [],
+  };
+  data.forEach((ele) => {
+    ele.value = JSON.parse(ele.value)
+    var row = Object.keys(ele.value);
+    times.push(ele.time);
+    row.forEach((key) => {
+      if (sorted[key] == undefined) {
+        sorted[key] = [];
+      }
+      sorted[key].push(ele.value[key]);
+    });
+  });
+  Object.keys(sorted).forEach((ele) => {
+    var dataEntry = {
+      label: ele,
+      data: sorted[ele],
+      fill: false,
+      borderColor: randomColor().bdc,
+    };
+    dataset.datasets.push(dataEntry)
+  });
+  return dataset
+}
+
+function parseLine(data, callback) {
+  console.log(data)
+  var chartData = {
+    type: "line",
+    data: parseDataset(data),
+  };
+  callback(chartData);
+}
+
+function randomColor() {
+  var red = Math.floor(Math.random() * 256);
+  var green = Math.floor(Math.random() * 256);
+  var blue = Math.floor(Math.random() * 256);
+
+  return {
+    bgc: `rgb(${red},${green},${blue})`,
+    bdc: `rgb(${255 - red},${255 - green},${255 - blue})`,
+  };
 }
 
 function add(object, row, column) {
@@ -38,20 +80,22 @@ function add(object, row, column) {
     }
     target.row.value.push(row.value[0]);
 
-    var order = target.column.name
-    var sorted = []
-    var sortedOrder = []
-    order.forEach( element => {
-      var idx = column.name.findIndex(ele => {return element == ele})
-      sortedOrder.push(column.name[idx])
-      sorted.push(column.value[0][idx])
-    })
+    var order = target.column.name;
+    var sorted = [];
+    var sortedOrder = [];
+    order.forEach((element) => {
+      var idx = column.name.findIndex((ele) => {
+        return element == ele;
+      });
+      sortedOrder.push(column.name[idx]);
+      sorted.push(column.value[0][idx]);
+    });
 
     target.column.value.push(sorted);
 
-    console.log('original order : '+column.name)
-    console.log('standard order : '+target.column.name)
-    console.log('sorted order : '+sortedOrder)
+    console.log("original order : " + column.name);
+    console.log("standard order : " + target.column.name);
+    console.log("sorted order : " + sortedOrder);
   }
   return JSON.parse(JSON.stringify(target));
 }
@@ -123,5 +167,6 @@ function test() {
 
 module.exports.add = add;
 module.exports.get = get;
-module.exports.init = init;
+//module.exports.init = init;
 module.exports.test = test;
+module.exports.parseLine = parseLine;
