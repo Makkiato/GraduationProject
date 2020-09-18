@@ -3,8 +3,8 @@ const http = require("http");
 const httpserver = http.createServer(app);
 const io = require("socket.io")(httpserver);
 const fc = require("./fiwareConnector");
-const sql = require("./mysqlConnector")
 const hi = require("./history")
+const sql = require("./sqlConnector").init()
 
 
 var config = require("./config.js");
@@ -31,6 +31,10 @@ app.get("/version", function (req, res) {
     res.send(fiwareData);
   });
 });
+
+app.get("/service", function(req,res){
+  res.sendFile(__dirname+"/FrameMain.html")
+})
 
 //webpage main
 app.get("/main", function (req, res) {
@@ -75,7 +79,7 @@ app.get("/main", function (req, res) {
   });
 });
 
-app.get("/detail", function (req, res) {
+app.get("/chart", function (req, res) {
   var target = req.query.id;
   var maximum = req.query.number
   var interval = req.query.interval
@@ -86,8 +90,9 @@ app.get("/detail", function (req, res) {
   } else {
     
     sql.findItem(target, maximum,function (sqlData) {
+      console.log(sqlData)
       hi.parseLine(sqlData,function(chartData){
-        res.render(__dirname + "/detail.pug", 
+        res.render(__dirname + "/chart.pug", 
         {data : JSON.stringify(chartData)}
       );
       })
@@ -114,7 +119,7 @@ function useDataTable(req,res){
     var useData = JSON.parse(fiwareData)
       
 
-    res.render(__dirname + "/Tabulator.pug", {
+    res.render(__dirname + "/DataTable.pug", {
       data: JSON.stringify(useData),
     });
   });

@@ -20,8 +20,9 @@ function parseDataset(data) {
     labels: times,
     datasets: [],
   };
+  console.log(data)
   data.forEach((ele) => {
-    ele.value = JSON.parse(ele.value)
+    //ele.value = JSON.parse(ele.value)
     var row = Object.keys(ele.value);
     times.push(ele.time);
     row.forEach((key) => {

@@ -13,7 +13,7 @@ const fc = require("./fiwareConnector");
 const listener = require("./subListener");
 
 var connectorList = {};
-
+console.log(listenerIP)
 
 listener.init(listnerPort, processOrder, function () {
   //console.log("listner on!")

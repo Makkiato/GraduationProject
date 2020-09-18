@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1-frameset.dtd">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Welcome to fiware project</title>
+    <script src="http://localhost:7777/socket.io/socket.io.js"></script>
+    <frameset rows=40%,60% frameborder=0>
+      <frame src="/table" name=table/>
+      <frameset cols=50%,50% frameborder=0>
+        <frame src='/version' name='detail'/>
+        <frame src='/chart' name='chart'/>
+      </frameset>
+    </frameset>
+</head>
+
+<script>
+    //preparing websocket
+    var socket = io();
+    //data from fiwareCB -> nodejs server
+    var data = ''.split('&quot;').join('"');
+    var parsed = JSON.parse(data)
+</script>

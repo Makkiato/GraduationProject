@@ -5,7 +5,7 @@ sio = socketio.Client()
 def handler():
     print("socket connected")
 
-@sio.on('connection_error')
+@sio.on('connect_error')
 def handler():
     print("connection fail")
 
