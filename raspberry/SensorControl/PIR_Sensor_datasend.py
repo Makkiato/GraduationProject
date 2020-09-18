@@ -16,11 +16,11 @@ json_sensordata = OrderedDict()
 def ledblink():
 
     if GPIO.input(pir) == True:
-        print("Sensor ON")
+        #print("Sensor ON")
         GPIO.output(led, GPIO.HIGH)
             
     if GPIO.input(pir) == False:
-        print("Sensor OFF")
+        #print("Sensor OFF")
         GPIO.output(led, GPIO.LOW)
 
 
@@ -33,7 +33,7 @@ def set_interval(func, sec):
     return t
 
 
-set_interval(ledblink,1)
+set_interval(ledblink,0.2)
 
 @sio.on('connect')
 def handler():
