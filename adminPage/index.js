@@ -114,7 +114,7 @@ function useDataTable(req,res){
     var useData = JSON.parse(fiwareData)
       
 
-    res.render(__dirname + "/mainTable.pug", {
+    res.render(__dirname + "/Tabulator.pug", {
       data: JSON.stringify(useData),
     });
   });

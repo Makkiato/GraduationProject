@@ -16,11 +16,13 @@ script.
     var parsed = JSON.parse('#{data}'.split('&quot;').join('"'));
     var common = ['id','deviceType','state']
     var column = buildColumn(common)
+    column.column.push({className : 'details-control'})
     var columnDefs = [{visible: true, targets: "_all"}].concat(column.title)
     console.log(column)
     console.log(columnDefs)
     $(document).ready(function () {
         mainTable = $('#tableField').dataTable({
+            
             data : parsed,
             columns :column.column,
             columnDefs : columnDefs,
@@ -30,8 +32,8 @@ script.
     
     function buildColumn(data){
         var toReturn = {
-            column : [],
-            title : []
+            column : [''],
+            title : [{title: "", targets: 0} ]
         }
         
         data.forEach((ele) =>{

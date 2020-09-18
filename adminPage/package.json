@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bootstrap": "^4.5.2",
     "chart.js": "^2.9.3",
     "express": "^4.17.1",
     "mysql": "^2.18.1",
