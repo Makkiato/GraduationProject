@@ -1,5 +1,6 @@
 import spidev, time, socketio, json
 import RPi.GPIO as GPIO
+import threading
 from collections import OrderedDict
 
 led = 18
@@ -12,22 +13,27 @@ sio = socketio.Client()
 
 json_sensordata = OrderedDict()
 
-"""
-try :
-    while True:
-        if GPIO.input(pir) == True:
-            print("Sensor ON")
-            GPIO.output(led, GPIO.HIGH)
-            time.sleep(0.2)
+def ledblink():
+
+    if GPIO.input(pir) == True:
+        #print("Sensor ON")
+        GPIO.output(led, GPIO.HIGH)
             
-        if GPIO.input(pir) == False:
-            print("Sensor OFF")
-            GPIO.output(led, GPIO.LOW)
-            time.sleep(0.2)
-            
-except KeyboardInterrupt:
-    GPIO.cleanup()
-"""
+    if GPIO.input(pir) == False:
+        #print("Sensor OFF")
+        GPIO.output(led, GPIO.LOW)
+
+
+def set_interval(func, sec):
+    def func_wrapper():
+        set_interval(func, sec)
+        func()
+    t = threading.Timer(sec, func_wrapper)
+    t.start()
+    return t
+
+
+set_interval(ledblink,0.2)
 
 @sio.on('connect')
 def handler():
