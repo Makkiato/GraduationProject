@@ -6,19 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Welcome to fiware project</title>
     <script src="http://localhost:7777/socket.io/socket.io.js"></script>
-    <frameset rows=40%,60% frameborder=0>
+    <frameset cols=30%,70% frameborder=1>
       <frame src="/table" name=table/>
-      <frameset cols=50%,50% frameborder=0>
-        <frame src='/version' name='detail'/>
-        <frame src='/chart' name='chart'/>
+      <frameset rows=30%,70% frameborder=0>
+        <frame src='/main?id=none&type=none' name='detail'/>
+        <frame src='/chart?id=none&type=none' name='chart'/>
       </frameset>
     </frameset>
 </head>
-
-<script>
-    //preparing websocket
-    var socket = io();
-    //data from fiwareCB -> nodejs server
-    var data = ''.split('&quot;').join('"');
-    var parsed = JSON.parse(data)
-</script>

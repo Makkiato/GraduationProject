@@ -51,7 +51,8 @@ body
             var table = $('#tableField').DataTable();            
             var row = table.rows(this).data();
             console.log(row)
-            parent.chart.location.href="./chart?id="+row[0].id
+            parent.chart.location.href=`./chart?id=${row[0].id}`
+            parent.detail.location.href=`./main?id=${row[0].id}&type=${row[0].type}`
             
         });
 

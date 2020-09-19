@@ -7,86 +7,104 @@ head
     | Welcome to fiware project
   script(src='http://localhost:7777/socket.io/socket.io.js')
 div(id = 'table')
-div(id = 'chartArea')
-  canvas(id='chart')
+div(id = 'orderSelect')
+
 
 script.
-  
+
   //preparing websocket
   var socket = io();
   //data from fiwareCB -> nodejs server
   var data = '#{data}'.split('&quot;').join('"');
   var parsed = JSON.parse(data)
   var table = document.getElementById('table')
+  var orderSelect = document.getElementById('orderSelect')
+  var orderTouched = false
   //prepare for innerHtml
-  const title = '<table border="3"><tr><td>id</td><td>device type</td><td>agent</td><td>group</td><td>control</td></tr>'
-  console.log(parsed)
-  rebuildTable(parsed)
-  attatchEventListner(parsed)
+  const title = '<center><table border="3"><tr><th>id</th><th>device type</th><th>agent</th><th>group</th></tr>'
+  //console.log(parsed[0])
+  rebuildTable(parsed[0])
+  
+  reloadSelect(parsed[0])
+
+
   socket.on('update',function(data){
     console.log('update')
-    console.log(data)
-    rebuildTable(data)
-    attatchEventListner(data)
-    
-
+    //console.log(data)
+    rebuildTable(data[0]) 
+    if(orderTouched) {
+      orderTouched=false
+      reloadSelect(data[0])
+    }
   })
 
   function rebuildTable(parsedData){   
 
     content = title.toString()
-    for(var i = 0; i<parsedData.length; i++){
+    //for(var i = 0; i<parsedData.length; i++){
 
 
 
       content = content.concat('<tr>')
-      content = content.concat('<td>' + parsedData[i].id + '</td>')
-      content = content.concat('<td>' + parsedData[i].type + '</td>')           
-      content = content.concat('<td>' + parsedData[i].agent.value + '</td>')
-      content = content.concat('<td>' + parsedData[i].group.value + '</td>')
+      content = content.concat('<td>' + parsedData.id + '</td>')
+      content = content.concat('<td>' + parsedData.deviceType.value + '</td>')           
+      content = content.concat('<td>' + parsedData.agent.value + '</td>')
+      content = content.concat('<td>' + parsedData.group.value + '</td>')
       //content = content.concat('<td>' + parsedData[i].state.value + '</td>')
 
 
-      var selectString = "<select id = 'select"+(1+i)+"'>"+
-      "<option value ='default'>no change</option>"
+      
 
-      for(var j=0; j<parsedData[i].work.value.length; j++){
-        selectString = selectString.concat("<option value ='"+parsedData[i].work.value[j]+"'>"+ parsedData[i].work.value[j] +"</option>")
-      }
-      selectString = selectString.concat("</select>");
-      content = content.concat('<td>' + selectString + '</td>');
-      content = content.concat('</tr><tr><td>values</td></tr><tr>');
 
-      parsedData[i].history.value.forEach(element => {content=content.concat('<td>'+element+'</td>')})
-      content = content.concat('<td>details</td></tr><tr>')
-      parsedData[i].history.value.forEach(element => {content=content.concat('<td>'+parsedData[i][element].value+'</td>')})
-      content = content.concat(`<td><a href = "/detail?id=`+parsedData[i].id+`" target = "_blank">show details</a></td></tr>`)
-    }
+      //content = content.concat('<td>' + selectString + '</td>');
+      content = content.concat('</tr><th colspan='+parsedData.history.value.length+'>values</th><tr>');
+
+      parsedData.history.value.forEach(element => {content=content.concat('<td>'+element+'</td>')})
+      content = content.concat('</tr><tr>')
+      //content = content.concat('<td>details</td></tr><tr>')
+      parsedData.history.value.forEach(element => {content=content.concat('<td>'+parsedData[element].value+'</td>')})
+      //content = content.concat(`<td><a href = "/detail?id=`+parsedData[i].id+`" target = "_blank">show details</a></td></tr>`)
+    //}
   content = content.concat('</table>')
   table.innerHTML = content
+
   }
 
   function attatchEventListner(parsed){
-    console.log(parsed)
-    for(var i = 0; i < parsed.length; i++){
-      const index = i+1
-      const selectedBox = document.getElementById('select'+index);
+    
+    //console.log(parsed)
+    //for(var i = 0; i < parsed.length; i++){
+      //const index = i+1
+      const selectedBox = document.getElementById('select');
       //adding event handler for each selectbox
       selectedBox.addEventListener("change" ,function(){
         var orderSend = {}
         orderSend.type = "string"
         orderSend.value = selectedBox.options[selectedBox.selectedIndex].value
-        var dataSend = {'id' : (parsed[index-1])["id"],'type' : 'order' ,'order' : orderSend, 'agent' : (parsed[index-1])["agent"], 'group' : (parsed[index-1])["group"]}
+        var dataSend = {'id' : parsed.id,'type' : 'order' ,'order' : orderSend, 'agent' : parsed.agent, 'group' : parsed.group}
         socket.emit('change',dataSend);
-        socket.on('done',function(data){
+        socket.on('done',function(){
+          orderTouched=true;
           //window.location.reload();
         })
       });
     }
+ // }
+
+  function reloadSelect(data){
+    
+    //console.log(parsedData[0])
+    var selectString = "<center>Submit Order :<select id = 'select'><option value ='default'>no change</option>"
+    for(var j=0; j<data.work.value.length; j++){
+            
+            selectString = selectString.concat("<option value ='"+data.work.value[j]+"'>"+ data.work.value[j] +"</option>")
+          }
+          selectString = selectString.concat("</select>");
+          orderSelect.innerHTML=selectString
+          attatchEventListner(data)
   }
 
-  
 
 
-  
-  
+
+

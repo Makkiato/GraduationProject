@@ -72,6 +72,7 @@ client.on("message", function (topic, message) {
   if (topic == "/order/" + deviceInfo.id) {
     console.log("order recieved");
     var parsed = JSON.parse(message);
+    console.log(parsed)
     //proccess order here
     action = parsed.order.value;
   } else if (topic == "/info/" + deviceInfo.id) {
@@ -110,10 +111,3 @@ client.on("message", function (topic, message) {
   }
 });
 
-
-var test = execa("python",[__dirname+"/../SensorControl/Ledblink.py","2","3"])
-test.stdout.pipe(process.stdout);
-(async () => {
-  const {stdout} = await test;
-  console.log('child output:', stdout);
-})();

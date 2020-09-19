@@ -39,10 +39,12 @@ app.get("/service", function(req,res){
 //webpage main
 app.get("/main", function (req, res) {
   //simple copy
+  
   var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
+  var reqId = req.query.id;
   var reqType = req.query.type;
   if (reqType == null) fiwareConfig.path = "/v2/entities";
-  else fiwareConfig.path = "/v2/entities?type=" + reqType;
+  else fiwareConfig.path = `/v2/entities?id=${reqId}&type=${reqType}`
 
   fc.getFiware(fiwareConfig, function (fiwareData) {
     var useData = JSON.parse(fiwareData)     
