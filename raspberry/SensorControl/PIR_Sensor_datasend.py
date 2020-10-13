@@ -15,11 +15,11 @@ json_sensordata = OrderedDict()
 
 def ledblink():
 
-    if GPIO.input(pir) == True:
+    if GPIO.input(pir) == True: #센서 ON
         #print("Sensor ON")
         GPIO.output(led, GPIO.HIGH)
             
-    if GPIO.input(pir) == False:
+    if GPIO.input(pir) == False: #센서 OFF
         #print("Sensor OFF")
         GPIO.output(led, GPIO.LOW)
 
@@ -33,7 +33,7 @@ def set_interval(func, sec):
     return t
 
 
-set_interval(ledblink,0.2)
+set_interval(ledblink,0.2) #0.2초 간격으로 Led Blink 함수 실행
 
 @sio.on('connect')
 def handler():
@@ -44,7 +44,7 @@ def handler():
     print("connection fail")
 
 @sio.on('order')
-def hadler(data):
+def handler(data):
     #if(data.value = "some order"){}
     #elif(data.value = "other order"){}
     print("recieved order")
@@ -54,3 +54,5 @@ def hadler(data):
     sio.emit('disconnect')
 
 sio.connect('http://localhost:3000')
+
+
