@@ -11,52 +11,8 @@ div(id = 'chartArea')
     canvas(id='chart')
 
 script.
+    console.log('#{data}'.split('&quot;').join('"'))
     var data = JSON.parse('#{data}'.split('&quot;').join('"'));
     //deployChart(data.value,'line')
     var ctx = document.getElementById('chart').getContext('2d');
     var chart = new Chart(ctx,data)
-
-    function deployChart(origin,form){
-        var ctx = document.getElementById('chart').getContext('2d');
-        var chart = new Chart(ctx,{type : form,
-        data:
-            {
-                labels: origin.row.value,
-                datasets : buildDataset(origin.column)
-            }
-        })
-    }
-
-
-    function buildDataset(column){
-        var toReturn =[]
-        for(var i =0; i <column.name.length; i++){
-            var random = randomColor()
-            var object = {
-                label : column.name[i],
-                fill : false,
-                //backgroundColor: undefined,
-                borderColor: random.bdc,
-                data : buildData(column,i)
-
-            }
-
-            toReturn.push(object)
-        }
-        console.log(toReturn)
-        return toReturn
-    }
-
-    function buildData(column,index){
-        var toReturn = []
-        column.value.forEach(element => toReturn.push(element[index]))
-        return toReturn
-    }
-
-    function randomColor(){
-        var red = Math.floor((Math.random() * 256));
-        var green = Math.floor((Math.random() * 256));
-        var blue = Math.floor((Math.random() * 256));
-
-        return {bgc : `rgb(${red},${green},${blue})`,bdc : `rgb(${255-red},${255-green},${255-blue})`}
-    }

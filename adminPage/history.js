@@ -18,20 +18,23 @@ function parseDataset(data) {
   var times = [];
   var dataset = {
     labels: times,
-    datasets: [],
+    datasets: []    
   };
   console.log(data)
   data.forEach((ele) => {
-    //ele.value = JSON.parse(ele.value)
+    ele.value = JSON.parse(ele.value)
     var row = Object.keys(ele.value);
-    times.push(ele.time);
+    console.log(row)
+    times.unshift(ele.time);
     row.forEach((key) => {
       if (sorted[key] == undefined) {
         sorted[key] = [];
       }
-      sorted[key].push(ele.value[key]);
+      sorted[key].unshift(ele.value[key]);
+      //console.log(sorted.key)
     });
   });
+  
   Object.keys(sorted).forEach((ele) => {
     var dataEntry = {
       label: ele,
@@ -41,6 +44,8 @@ function parseDataset(data) {
     };
     dataset.datasets.push(dataEntry)
   });
+  //console.log('dataset')
+  //console.log(JSON.stringify(dataset))
   return dataset
 }
 
