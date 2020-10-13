@@ -33,7 +33,7 @@ def beep():
 
 
             
-    elif PIR_status == False: #센서 OFF
+    #elif PIR_status == False: #센서 OFF
         #print("Sensor OFF")
         #GPIO.output(led, GPIO.LOW)
 
