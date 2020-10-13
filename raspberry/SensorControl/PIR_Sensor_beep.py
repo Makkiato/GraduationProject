@@ -21,12 +21,12 @@ def beep():
     if PIR_status == True: #센서 ON
         #print("Sensor ON")
         GPIO.output(beep, GPIO.HIGH)
-        sleep(0.04)
+        sleep(0.4)
         GPIO.output(beep, GPIO.LOW)
             
-    elif PIR_status == False: #센서 OFF
+    #elif PIR_status == False: #센서 OFF
         #print("Sensor OFF")
-        GPIO.output(beep, GPIO.LOW)
+        #GPIO.output(beep, GPIO.LOW)
 
 
 def set_interval(func, sec):
