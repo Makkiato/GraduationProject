@@ -1,10 +1,12 @@
 import spidev, time, socketio, json
+from time import sleep
 import RPi.GPIO as GPIO
 import threading
 from collections import OrderedDict
 
 pir = 25
 beep = 12
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(pir,GPIO.IN)
 GPIO.setup(beep,GPIO.OUT)
@@ -19,6 +21,8 @@ def beep():
     if PIR_status == True: #센서 ON
         #print("Sensor ON")
         GPIO.output(beep, GPIO.HIGH)
+        sleep(0.04)
+        GPIO.output(beep, GPIO.LOW)
             
     elif PIR_status == False: #센서 OFF
         #print("Sensor OFF")
