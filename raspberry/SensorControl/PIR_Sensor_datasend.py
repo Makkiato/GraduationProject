@@ -15,7 +15,7 @@ PIR_status = GPIO.input(pir)
 json_sensordata = OrderedDict()
 
 def ledblink():
-
+    PIR_status = GPIO.input(pir)
     if PIR_status == 0: #센서 ON
         #print("Sensor ON")
         GPIO.output(led, GPIO.HIGH)
@@ -29,7 +29,6 @@ def set_interval(func, sec):
     def func_wrapper():
         set_interval(func, sec)
         func()
-    PIR_status = GPIO.input(pir)
     t = threading.Timer(sec, func_wrapper)
     t.start()
     return t
@@ -51,6 +50,7 @@ def handler(data):
     #if(data.value = "some order"){}
     #elif(data.value = "other order"){}
     print("recieved order")
+    PIR_status = GPIO.input(pir)
     json_sensordata["value"] = PIR_status
     sio.emit('order', json_sensordata)      
     print("send data")
