@@ -34,7 +34,6 @@ def handler(data):
     print("recieved order")
     
     h, t = Adafruit_DHT.read_retry(sensor, temp)
-    print("send data")
     print("Temperature = {0:0.1f}*C Humidity = {1:0.1f}%".format(t, h))
 
     json_sensordata["temp"] = t#{0:0.1f}.format(t)
