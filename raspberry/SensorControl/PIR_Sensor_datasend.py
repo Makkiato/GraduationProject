@@ -16,11 +16,11 @@ json_sensordata = OrderedDict()
 
 def ledblink():
 
-    if PIR_status == True: #센서 ON
+    if PIR_status == 0: #센서 ON
         #print("Sensor ON")
         GPIO.output(led, GPIO.HIGH)
             
-    elif PIR_status == False: #센서 OFF
+    elif PIR_status == 1: #센서 OFF
         #print("Sensor OFF")
         GPIO.output(led, GPIO.LOW)
 
