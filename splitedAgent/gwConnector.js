@@ -66,7 +66,7 @@ function init(orion, agentInfo, listenerIP, listnerPort, callback) {
       //console.log("register new device into");
       //console.log(JSON.stringify(parsed))
       fc.postFiware(fiwareConfig, parsed, function (fiwareData) {
-        console.log(fiwareData);
+        //console.log(fiwareData);
         connectors[parsed.id] = client;
         //console.log(client)
       });
@@ -89,7 +89,7 @@ function init(orion, agentInfo, listenerIP, listnerPort, callback) {
       subConfig.path = "/v2/subscriptions/" + targetSub[0].subId;
       //console.log(targetSub[0].subId)
       fc.deleteFiware(subConfig, function (fiwareData) {
-        console.log(fiwareData);
+        //console.log(fiwareData);
       });
 
       var parsed = data;
@@ -98,12 +98,12 @@ function init(orion, agentInfo, listenerIP, listnerPort, callback) {
       fiwareConfig.path = "/v2/entities/" + parsed.id;
 
       fc.deleteFiware(fiwareConfig, function (fiwareData) {
-        console.log(fiwareData);
+        //console.log(fiwareData);
         delete connectors[parsed.id];
       });
     });
     client.on("report", function (data) {
-      console.log("report");
+      //console.log("report");
       var parsed = data;
       var fiwareConfig = JSON.parse(JSON.stringify(orion));
       //var history = markHistory(parsed);
@@ -111,7 +111,7 @@ function init(orion, agentInfo, listenerIP, listnerPort, callback) {
       delete parsed.id;
       delete parsed.type;
       
-      console.log(moment().utcOffset(540))
+      //console.log(moment().utcOffset(540))
       parsed.group = {
         value: parsed.group,
         type: "group",
@@ -123,7 +123,7 @@ function init(orion, agentInfo, listenerIP, listnerPort, callback) {
 
       //console.log(parsed);
       fc.putFiware(fiwareConfig, parsed, function (fiwareData) {
-        console.log(fiwareData);
+        //console.log(fiwareData);
       });
     });
 

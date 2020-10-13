@@ -13,7 +13,7 @@ div(id = 'orderSelect')
 script.
 
   //preparing websocket
-  var socket = io();
+  var socket = io({transports: ['websocket'], upgrade: false});
   //data from fiwareCB -> nodejs server
   var data = '#{data}'.split('&quot;').join('"');
   var parsed = JSON.parse(data)
@@ -26,15 +26,20 @@ script.
   rebuildTable(parsed[0])
   
   reloadSelect(parsed[0])
+  const query = new URLSearchParams(location.search)
+  const id = query.get('id')
+  const type = query.get('type')
 
 
   socket.on('update',function(data){
-    console.log('update')
-    //console.log(data)
-    rebuildTable(data[0]) 
+    console.log('detail update')
+    var target = data.filter( (ele) => {
+      return ele.id == id && ele.type == type
+    })
+    rebuildTable(target[0]) 
     if(orderTouched) {
       orderTouched=false
-      reloadSelect(data[0])
+      reloadSelect(target[0])
     }
   })
 

@@ -51,6 +51,6 @@ def hadler(data):
     json_sensordata["value"] = GPIO.input(pir)
     sio.emit('order', json_sensordata)      
     print("send data")
-    sio.emit('disconnect')
+    
 
 sio.connect('http://localhost:3000')

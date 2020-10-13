@@ -8,11 +8,13 @@ head
     script(src="https://code.jquery.com/jquery-3.5.1.min.js")
     script(type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js")
     link(rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css")
+    script(src='http://localhost:7777/socket.io/socket.io.js')
 
 body
     table(id="tableField", class="cell-border stripe compact hover")
 
     script.
+        var socket = io({transports: ['websocket'], upgrade: false});
 
         var parsed = JSON.parse('#{data}'.split('&quot;').join('"'));
         var common = ['id','deviceType','state']
@@ -48,13 +50,37 @@ body
 
 
         $('#tableField').on('click', 'tr',function () {
-            var table = $('#tableField').DataTable();            
+            var table = $('#tableField').DataTable(); 
             var row = table.rows(this).data();
             console.log(row)
-            parent.chart.location.href=`./chart?id=${row[0].id}`
+            parent.chart.location.href=`./chart?id=${row[0].id}&type=${row[0].type}`
             parent.detail.location.href=`./main?id=${row[0].id}&type=${row[0].type}`
             
         });
+
+        socket.on('update', function(data){
+            var table = $('#tableField').DataTable(); 
+            console.log('list update')
+            var current = table.data().toArray()
+            
+            table.rows().remove()
+            data.forEach( (ele) => {
+                table.row.add({
+                    id : ele.id,
+                    type : ele.type,
+                    deviceType : ele.deviceType.value,
+                    state : ele.state.value
+                })
+            })
+            table.draw()
+
+
+            //table.data().toArray() => js 2차원 배열 data
+            //table.row.add(object).draw => 추가
+            //start.rows(index).remove().draw() => index row 삭제
+            //start.rows().remove().draw() => 전체 삭제
+            
+        })
 
 
 

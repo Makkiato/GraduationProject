@@ -46,7 +46,7 @@ function connectFiware(orionCB,writeData,callback){
 
 
 function aggregate(response, callback) {
-    console.log(`statusCode: ${response.statusCode}`);
+    //console.log(`statusCode: ${response.statusCode}`);
     var CBdata = "";
     response.on("data", function (chunk) {
       CBdata += chunk;

@@ -24,15 +24,16 @@ function init() {
     var queryDevice = `insert into device(id,type,did) select * from (select "${id}", "${type}", 0) as tmp where not exists (select did from device where (id = "${id}" and type = "${type}")) limit 1`
     var queryHistory = `insert into history(did,time,value,tid) select did,now(),'${JSON.stringify(item)}',0 from device where (id = "${id}" and type = "${type}")`
     
-    console.log(`device query : ${queryDevice}`);
-    console.log(`history query : ${queryHistory}`);
+    //console.log(`device query : ${queryDevice}`);
+    //console.log(`history query : ${queryHistory}`);
     pool.query(queryDevice)
     .then(deviceRows => {
       pool.query(queryHistory)
       .then(historyRows =>{
-      console.log("added item");
-      console.log(deviceRows);
-      console.log(historyRows);})
+      //console.log("added item");
+      //console.log(deviceRows);
+      //console.log(historyRows);
+    })
       .catch(err =>{
         console.log(err)
         console.log('table history failure')
@@ -44,11 +45,15 @@ function init() {
     });
   }
 
-  pool.findItem = (id, num, callback) =>{
-    var query = `select id,type,value,time from history h, device d where(h.did = d.did and id = "${id}") order by time desc limit ${num}`;
+  pool.findItem = (id, type, num, callback) =>{
+    var query = `select id,type,value,time from history h, device d where(h.did = d.did and id = "${id}" and type = "${type}") order by time desc limit ${num}`;
     pool.query(query)
     .then(rows => {
       delete rows.meta
+      rows.forEach((row) =>{
+        row.time = new Date(row.time).toString().split('GMT')[0]
+      })
+      console.log(rows)
       callback(rows);
     })
     .catch(err => {

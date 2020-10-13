@@ -6,13 +6,48 @@ head
     title
         | Welcome to fiware project
     script(src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0")
+    script(src='http://localhost:7777/socket.io/socket.io.js')
 
 div(id = 'chartArea')
     canvas(id='chart')
 
 script.
+    var socket = io({transports: ['websocket'], upgrade: false});
+    const query = new URLSearchParams(location.search)
+    const id = query.get('id')
+    const type = query.get('type')
+
     console.log('#{data}'.split('&quot;').join('"'))
-    var data = JSON.parse('#{data}'.split('&quot;').join('"'));
+    var chartData = JSON.parse('#{data}'.split('&quot;').join('"'));
     //deployChart(data.value,'line')
     var ctx = document.getElementById('chart').getContext('2d');
-    var chart = new Chart(ctx,data)
+    var chart = new Chart(ctx,chartData)
+
+    socket.on('update', function(data){
+        console.log('chart update')
+        var target = data.filter( (ele) => {
+            return ele.id == id && ele.type == type
+        })
+        //console.log(target)
+        var insertData={}
+        target[0].history.value.forEach((ele) =>{
+            insertData[ele] = target[0][ele].value
+        })
+        var lastStamp = chartData.data.labels[chartData.data.labels.length-1]
+        var newStamp = (new Date()).toString().split('GMT')[0]
+        if(lastStamp != newStamp)
+        {
+            chartData.data.labels.push(newStamp)
+            chartData.data.datasets.forEach( (set) =>{
+                set.data.push(insertData[set.label])
+            })
+        }
+        if(chartData.data.labels.length > 20){
+            chartData.data.labels.shift()
+            chartData.data.datasets.forEach((set) =>{
+                set.data.shift()
+            })
+        }
+        chart.update()
+
+        })

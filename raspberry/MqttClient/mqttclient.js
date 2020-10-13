@@ -1,11 +1,18 @@
 const mqtt = require("mqtt");
 const config = require("./config");
+const ot = require('./orderTransfer')
 const broker = config.broker;
 const client = mqtt.connect(
   "mqtt://" + broker.host + ":" + broker.port,
   config.registerOption
 );
 const execa = require("execa");
+
+ot.init( (pycon) =>{
+  
+})
+const realConnect = false
+
 var deviceInfo = config.deviceInfo;
 
 var count = 0;
@@ -47,16 +54,20 @@ client.on("connect", function () {
         action = "default";
         break;
     }
-
     var sendMSG = JSON.parse(JSON.stringify(deviceInfo))
-    sendMSG.temperature ={
-      value : Math.floor((Math.random() * 10)+10),
-      type : 'Numeric'
-    }
-
-    sendMSG.humidity ={
-      value : Math.floor((Math.random() * 30)+10),
-      type : 'Numeric'
+    if(realConnect){
+      
+    } else {
+      
+      sendMSG.temperature ={
+        value : Math.floor((Math.random() * 10)+10),
+        type : 'Numeric'
+      }
+  
+      sendMSG.humidity ={
+        value : Math.floor((Math.random() * 30)+10),
+        type : 'Numeric'
+      }
     }
     client.publish(
       "/order/" + deviceInfo.id + "/response",

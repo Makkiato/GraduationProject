@@ -10,9 +10,11 @@ function init(callback) {
     client.on("disconnect", () => {
       console.log("GPIO out");
     });
+    /*
     setInterval(()=>{
       client.emit('order', {test : "data"});
     },1000)
+    */
     
 
     callback(client);

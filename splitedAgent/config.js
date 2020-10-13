@@ -9,7 +9,7 @@ var agentInfo = {
 };
 
 var currentServer = {
-  ip: "192.168.0.156",
+  ip: "172.16.160.172",
   port: "7845",
 };
 
