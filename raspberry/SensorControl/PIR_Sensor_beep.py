@@ -18,24 +18,11 @@ def beep():
     PIR_status = GPIO.input(pir)
     if PIR_status == True: #센서 ON
         #print("Sensor ON")
-        scale = [ 261, 294, 329, 349, 392, 440, 493, 523 ]
-        list = [4, 4, 5, 5, 4, 4, 2, 4, 4, 2, 2, 1]
-        p = GPIO.PWM(beep, 100)
-        p.start(100)
-        p.ChangeDutyCycle(90)
-        for i in range(12):
-            p.ChangeFrequency(scale[list[i]])
-            if i == 6:
-                time.sleep(1)
-            else :
-                time.sleep(0.5)
-        p.stop()
-
-
+        GPIO.output(beep, GPIO.HIGH)
             
-    #elif PIR_status == False: #센서 OFF
+    elif PIR_status == False: #센서 OFF
         #print("Sensor OFF")
-        #GPIO.output(led, GPIO.LOW)
+        GPIO.output(beep, GPIO.LOW)
 
 
 def set_interval(func, sec):
