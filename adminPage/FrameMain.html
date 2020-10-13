@@ -1,16 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1-frameset.dtd">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Welcome to fiware project</title>
-    <script src="http://localhost:7777/socket.io/socket.io.js"></script>
-    <frameset cols=30%,70% frameborder=1>
-      <frame src="/table" name=table/>
-      <frameset rows=30%,70% frameborder=0>
-        <frame src='/main?id=none&type=none' name='detail'/>
-        <frame src='/chart?id=none&type=none' name='chart'/>
-      </frameset>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Welcome to fiware project</title>
+
+  <frameset cols="30%,70%" frameborder="1">
+    <frame src="/table" name="table" />
+    <frameset rows="30%,70%" frameborder="0">
+      <frame src="/main?id=none&type=none" name="detail" />
+      <frame src="/chart?id=none&type=none" name="chart" />
     </frameset>
+  </frameset>
 </head>
+<script>
+  const frameTable = frames.table
+  const frameDetail = frames.detail
+  const frameChart = frames.chart
+
+  
+</script>

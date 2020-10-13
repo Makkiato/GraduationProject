@@ -8,7 +8,7 @@ const sql = require("./sqlConnector").init()
 
 
 var config = require("./config.js");
-
+var currentWatching={}
 var latest={};
 
 //pug activation
@@ -34,26 +34,6 @@ app.get("/version", function (req, res) {
 
 app.get("/service", function(req,res){
   res.sendFile(__dirname+"/FrameMain.html")
-})
-
-//webpage main
-app.get("/main", function (req, res) {
-  //simple copy
-  
-  var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
-  var reqId = req.query.id;
-  var reqType = req.query.type;
-  if (reqType == null) fiwareConfig.path = "/v2/entities";
-  else fiwareConfig.path = `/v2/entities?id=${reqId}&type=${reqType}`
-
-  fc.getFiware(fiwareConfig, function (fiwareData) {
-    var useData = JSON.parse(fiwareData)     
-
-    res.render(__dirname + "/adminMain.pug", {
-      data: JSON.stringify(useData),
-    });
-  });
-  //using websocket
   io.on("connection", function (socket) {
     setInterval(function(){
       socket.emit("update", latest);
@@ -79,6 +59,27 @@ app.get("/main", function (req, res) {
       });
     });
   });
+})
+
+//webpage main
+app.get("/main", function (req, res) {
+  //simple copy
+  
+  var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
+  currentWatching.reqId = req.query.id;
+  currentWatching.reqType = req.query.type;
+  
+  fiwareConfig.path = `/v2/entities?id=${currentWatching.reqId}&type=${currentWatching.reqType}`
+  console.log(fiwareConfig.path)
+  fc.getFiware(fiwareConfig, function (fiwareData) {
+    var useData = JSON.parse(fiwareData)     
+
+    res.render(__dirname + "/adminMain.pug", {
+      data: JSON.stringify(useData),
+    });
+  });
+  //using websocket
+  
 });
 
 app.get("/chart", function (req, res) {
@@ -92,8 +93,10 @@ app.get("/chart", function (req, res) {
   } else {
     
     sql.findItem(target, maximum,function (sqlData) {
-      console.log(sqlData)
+      
       hi.parseLine(sqlData,function(chartData){
+        //console.log(chartData)
+        //console.log(JSON.stringify(chartData))
         res.render(__dirname + "/chart.pug", 
         {data : JSON.stringify(chartData)}
       );
@@ -134,7 +137,7 @@ httpserver.listen(config.serverport, function () {
 setInterval(function () {
   console.log("Interval work");
   var fiwareConfig = JSON.parse(JSON.stringify(config.orionCB));
-  fiwareConfig.path = "/v2/entities";
+  fiwareConfig.path = `/v2/entities?id=${currentWatching.reqId}&type=${currentWatching.reqType}`;
 
   fc.getFiware(fiwareConfig, function (fiwareData) {
     var useData = JSON.parse(fiwareData).filter(
