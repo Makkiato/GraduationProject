@@ -10,7 +10,7 @@ GPIO.setup(pir,GPIO.IN)
 GPIO.setup(led,GPIO.OUT)
 
 sio = socketio.Client()
-PIR_status = False
+PIR_status = GPIO.input(pir)
 
 json_sensordata = OrderedDict()
 
