@@ -15,7 +15,7 @@ PIR_status = GPIO.input(pir)
 json_sensordata = OrderedDict()
 
 def ledblink():
-    #PIR_status = GPIO.input(pir)
+    PIR_status = GPIO.input(pir)
     if PIR_status == True: #센서 ON
         #print("Sensor ON")
         GPIO.output(led, GPIO.HIGH)
@@ -34,7 +34,7 @@ def set_interval(func, sec):
     return t
 
 
-set_interval(ledblink,0.1) #0.2초 간격으로 Led Blink 함수 실행
+set_interval(ledblink,0.05) #0.2초 간격으로 Led Blink 함수 실행
 
 
 @sio.on('connect')
