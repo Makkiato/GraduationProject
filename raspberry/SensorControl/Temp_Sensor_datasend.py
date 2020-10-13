@@ -37,8 +37,8 @@ def handler(data):
     print("send data")
     print("Temperature = {0:0.1f}*C Humidity = {1:0.1f}%".format(t, h))
 
-    json_sensordata["temp"] = {0:0.1f}.format(t)
-    json_sensordata["hum"] = {1:0.1f}.format(h)
+    json_sensordata["temp"] = t#{0:0.1f}.format(t)
+    json_sensordata["hum"] = h#{1:0.1f}.format(h)
     
     sio.emit('order', json_sensordata)      
     print("send data")
