@@ -1,29 +1,32 @@
 import spidev, time, socketio, json
+from time import sleep
 import RPi.GPIO as GPIO
 import threading
 from collections import OrderedDict
 
-led = 18
 pir = 25
+beep = 12
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(pir,GPIO.IN)
-GPIO.setup(led,GPIO.OUT)
+GPIO.setup(beep,GPIO.OUT)
 
 sio = socketio.Client()
 PIR_status = GPIO.input(pir)
 
 json_sensordata = OrderedDict()
 
-def ledblink():
+def beep():
     PIR_status = GPIO.input(pir)
     if PIR_status == True: #센서 ON
         #print("Sensor ON")
-        GPIO.output(led, GPIO.HIGH)
+        GPIO.output(beep, GPIO.HIGH)
+        sleep(0.4)
+        GPIO.output(beep, GPIO.LOW)
             
-    elif PIR_status == False: #센서 OFF
+    #elif PIR_status == False: #센서 OFF
         #print("Sensor OFF")
-        GPIO.output(led, GPIO.LOW)
+        #GPIO.output(beep, GPIO.LOW)
 
 
 def set_interval(func, sec):
@@ -35,7 +38,7 @@ def set_interval(func, sec):
     return t
 
 
-set_interval(ledblink,0.05) #0.2초 간격으로 Led Blink 함수 실행
+set_interval(beep,0.05) #0.05초 간격으로 beep 함수 실행
 
 
 @sio.on('connect')
@@ -55,7 +58,7 @@ def handler(data):
     json_sensordata["value"] = PIR_status
     sio.emit('order', json_sensordata)      
     print("send data")
-    
+    sio.emit('disconnect')
 
 sio.connect('http://localhost:3000')
 
