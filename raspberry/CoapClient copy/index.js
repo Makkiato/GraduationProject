@@ -1,7 +1,5 @@
 const coap = require("coap");
-
 const config = require("./config");
-const deviceInfo = config.deviceInfo;
 const server = coap.createServer();
 
 var coapTiming = {
@@ -12,8 +10,7 @@ var coapTiming = {
   piggybackReplyMs: 10,
 };
 
-var action = deviceInfo.state.value;
-var pass = 0
+var action = "default";
 coap.updateTiming(coapTiming);
 
 // the default CoAP port is 5683
@@ -49,24 +46,18 @@ register(function () {
   setInterval(function () {
     console.log(`processing : ${action}`);
     switch (action) {
-      case "automated":
-        deviceInfo.lastPass.value = passVehicle()
+      case "default":
         break;
-      case "block":
-        config.deviceInfo.state.value = "block";
-        action = "block";
+      case "activate":
+        config.deviceInfo.state.value = "activated";
+        action = "default";
         break;
-      case "open":
-        config.deviceInfo.state.value = "open";
-        deviceInfo.lastPass.value = passVehicle()
-        action = "open";
-        break;
-      case "warning":
-        config.deviceInfo.state.value = "warning";
-        action = "warning";
+      case "deactivate":
+        config.deviceInfo.state.value = "deactivated";
+        action = "default";
         break;
       default:
-        action = "automated";
+        action = "default";
         break;
     }
     var target = JSON.parse(JSON.stringify(config.server));
@@ -90,12 +81,6 @@ register(function () {
     putReq.end();
   }, 3000);
 });
-
-function passVehicle(){
-  var name = "HYUCAR" + pass
-  pass++
-  return name
-}
 //terminate
 
 //info

@@ -6,36 +6,25 @@ var server = {
 
 
 var deviceInfo = {
-    id: "ParkinglotRoadblock_CoAP",
+    id: "HYUEntranceMetro2ndExit_CoAP",
     type: "device",
   
     deviceType :{
       type : "device",
-      value : "traffic"
+      value : "FireBreak"
     },
   
     state: {
-      value : "automated",
+      value : "Deactivated",
       type : "string"
     },
   
     work: {
-      value: ["block","open","warning","automated"],
+      value: ["activate","deactivate"],
       type: "action"
     },
-
-    pass : {
-      type : "Numeric",
-      value : 0
-    },
-
-    lastPass :{
-      type : "String",
-      value : "HYUCAR"
-    },
-
     history: {
-      value: ["pass","lastPass"],
+      value: [],
       type: "record",
     },
   };
