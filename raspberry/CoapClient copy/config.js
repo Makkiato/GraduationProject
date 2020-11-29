@@ -24,7 +24,7 @@ var deviceInfo = {
       type: "action"
     },
     history: {
-      value: [],
+      value: ["state"],
       type: "record",
     },
   };

@@ -154,10 +154,11 @@ function updateDB(object) {
     id: object.id,
     type: object.type,
   };
-  //console.log(object)
+  console.log(object)
   object.history.value.forEach((ele) => {
     data[ele] = object[ele].value;
   });
+  data.deviceType = object.deviceType.value
   //console.log(data)
   sql.addItem(data);
 }

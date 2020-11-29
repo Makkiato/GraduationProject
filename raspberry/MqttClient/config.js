@@ -14,8 +14,7 @@ var deviceInfo = {
 
   state: {
     value: "OFF",
-    type: "string",
-    possible : 3
+    type: "string"
   },
 
   work: {

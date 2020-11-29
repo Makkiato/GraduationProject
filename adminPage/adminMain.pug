@@ -5,8 +5,14 @@ head
   meta(http-equiv='X-UA-Compatible' content='ie=edge')
   title
     | Welcome to fiware project
+  link(rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css')
+  link(rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css')
+  script(type='text/javascript' language='javascript' src='https://code.jquery.com/jquery-3.5.1.js')
+  script(type='text/javascript' language='javascript' src='https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js')
+  script(type='text/javascript' language='javascript' src='https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js')
+
   script(src='http://localhost:7777/socket.io/socket.io.js')
-div(id = 'table')
+div(id = 'table'  )
 div(id = 'orderSelect')
 
 
@@ -21,7 +27,7 @@ script.
   var orderSelect = document.getElementById('orderSelect')
   var orderTouched = false
   //prepare for innerHtml
-  const title = '<center><table border="3"><tr><th>id</th><th>device type</th><th>agent</th><th>group</th></tr>'
+  const title = '<center><table border="3" class="table table-striped table-bordered"><tr><th>id</th><th>device type</th><th>agent</th><th>group</th></tr>'
   //console.log(parsed[0])
   rebuildTable(parsed[0])
   

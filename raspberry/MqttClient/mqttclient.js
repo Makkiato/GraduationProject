@@ -1,16 +1,17 @@
 const mqtt = require("mqtt");
 const config = require("./config");
-const ot = require('./orderTransfer')
+//const ot = require('./orderTransfer')
 const broker = config.broker;
 const client = mqtt.connect(
   "mqtt://" + broker.host + ":" + broker.port,
   config.registerOption
 );
+console.log(client)
 const execa = require("execa");
-
+/*
 ot.init( (pycon) =>{
   
-})
+})*/
 const realConnect = false
 
 var deviceInfo = config.deviceInfo;
@@ -58,7 +59,7 @@ client.on("connect", function () {
     if(realConnect){
       
     } else {
-      
+      console.log("RNG")
       sendMSG.temperature ={
         value : Math.floor((Math.random() * 10)+10),
         type : 'Numeric'

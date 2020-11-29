@@ -5,13 +5,21 @@ head
     meta(http-equiv='X-UA-Compatible' content='ie=edge')
     title
         | Welcome to fiware project
-    script(src="https://code.jquery.com/jquery-3.5.1.min.js")
-    script(type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js")
-    link(rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css")
+
+    link(rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css')
+    link(rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css')
+    script(type='text/javascript' language='javascript' src='https://code.jquery.com/jquery-3.5.1.js')
+    script(type='text/javascript' language='javascript' src='https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js')
+    script(type='text/javascript' language='javascript' src='https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js')
+
+
     script(src='http://localhost:7777/socket.io/socket.io.js')
 
 body
-    table(id="tableField", class="cell-border stripe compact hover")
+    table(id="tableField" class="table table-striped table-bordered")
+    div(class="center" )
+        center
+            button(id="filterReset" type="button" class="btn btn-primary" ) reset filter
 
     script.
         var socket = io({transports: ['websocket'], upgrade: false});
@@ -26,7 +34,7 @@ body
 
                 data : parsed,
                 columns :column.column,
-                
+
                 //buttons:['test1','test2']});
 
             });
@@ -47,22 +55,39 @@ body
             console.log(toReturn)
             return toReturn
         }
+        $('#filterReset').click(function(){
+            console.log('reset filter')
+            var table = $('#tableField').DataTable();
+            table.search( '' ).columns().search( '' ).draw();
+        })
+        
 
-
-        $('#tableField').on('click', 'tr',function () {
+        $('#tableField').on('click', 'td',function () {
             var table = $('#tableField').DataTable(); 
-            var row = table.rows(this).data();
-            console.log(row)
-            parent.chart.location.href=`./chart?id=${row[0].id}&type=${row[0].type}`
-            parent.detail.location.href=`./main?id=${row[0].id}&type=${row[0].type}`
-            
+            var row = table.row(this).data();
+            var column = table.cell(this).index().column;
+            //console.log(`value : ${table.cell(this).data()}`)
+
+            if(column == 0)
+            {
+                //console.log(`column : ${table.column(this).index()}`)
+                //console.log(`row : ${JSON.stringify(row)}`)
+                parent.chart.location.href=`./chart?id=${row.id}&type=${row.type}`
+                parent.detail.location.href=`./main?id=${row.id}&type=${row.type}`
+            } else if(column == 1){
+                console.log(`column : ${column}`)
+                console.log(`row : ${row}`)
+                table.column(this).search(table.cell(this).data()).draw()
+
+            }
+
         });
 
         socket.on('update', function(data){
             var table = $('#tableField').DataTable(); 
             console.log('list update')
             var current = table.data().toArray()
-            
+
             table.rows().remove()
             data.forEach( (ele) => {
                 table.row.add({
@@ -79,7 +104,7 @@ body
             //table.row.add(object).draw => 추가
             //start.rows(index).remove().draw() => index row 삭제
             //start.rows().remove().draw() => 전체 삭제
-            
+
         })
 
 

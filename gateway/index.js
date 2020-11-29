@@ -69,6 +69,7 @@ function report(deviceData, connectionId) {
     agent.emit('report', parsed)
 }
 function shutdown(deviceData, connectionId) {
+    console.log(`shutdown : ${deviceData}`)
     var parsed = deviceData[0];
     
     agent.emit('terminate', {id : parsed.id, type : parsed.type, group: connectionId})

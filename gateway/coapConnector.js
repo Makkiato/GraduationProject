@@ -69,7 +69,7 @@ function init(register, report, shutdown, callback) {
     });
     var object = server.deviceList.splice(index, 1);
     //console.log(client.deviceList);
-    shutdown(object[0].id);
+    shutdown(object);
   }
 
   server.listen(function () {

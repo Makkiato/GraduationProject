@@ -1,4 +1,0 @@
-#!/bin/sh
-
-git tag -a $(cat package.json | json version) -m "Newest published release to npm."
-git push origin --tags
