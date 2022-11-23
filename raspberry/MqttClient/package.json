@@ -11,6 +11,6 @@
   "dependencies": {
     "execa": "^4.0.0",
     "mqtt": "^3.0.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.5.0"
   }
 }
